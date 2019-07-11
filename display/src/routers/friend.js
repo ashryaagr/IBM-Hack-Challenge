@@ -1,6 +1,4 @@
-// TODO : Add CRUD operations for the friend  model
 const Friend = require('../models/friend') ;
-const User = require('../models/user') ;
 const express = require('express');
 const passport = require('../passport') ;
 
@@ -9,7 +7,7 @@ const router = new express.Router()
 router.post('/friend' , passport.authenticate('jwt', { session:false }) , 
     async (req , res) => {
         const friend = Friend(req.body) ;
-        friend.owner = req.user.id ;
+        friend.owner = req.user._id ;
 		await friend.save().then((friend)=>{
 			res.status(200).send({friend})
 		}).catch((e)=>{

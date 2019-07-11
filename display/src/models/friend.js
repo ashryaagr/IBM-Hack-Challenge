@@ -1,5 +1,3 @@
-// TODO: Write a model for the friend
-
 const mongoose = require('mongoose');
 
 const friendSchema = new mongoose.Schema({

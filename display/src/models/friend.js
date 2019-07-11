@@ -7,7 +7,11 @@ const friendSchema = new mongoose.Schema({
         type : String ,
         required : true
     },
-    owner : Schema.ObjectId,
+	owner: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: 'user',
+	},
     usernames : {
         type : Map,
         of : String

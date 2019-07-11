@@ -25,7 +25,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
         unique: true,
-        required: true,
         validate(value) {
             if (!validator.isEmail(value)) {
                 throw new Error('Email is invalid')
@@ -44,13 +43,14 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('friends', {
 	ref: 'friend',
 	localField: '_id',
-	foreignField: '_id'
+	foreignField: 'owner'
 });
 
 userSchema.pre('save', async function (next) {
 	const user = this ;
-	validator.normalizeEmail(user.email, [ true, true, true, true, true, true, true, true,
-		true, true, true]) ;
+	if (user.email)
+		validator.normalizeEmail(user.email, [ true, true, true, true, true, true, true, true,
+			true, true, true]) ;;
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8)
 	}
@@ -77,7 +77,7 @@ userSchema.methods.generateAuthToken = async function () {
 	return token
 } ;
 
-// Delete user tasks when user is removed
+// Delete user friends when user is removed
 userSchema.pre('remove', async function (next) {
 	const user = this ;
 

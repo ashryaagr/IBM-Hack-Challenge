@@ -1,0 +1,5 @@
+tweepy
+stackapi
+json
+twitter_credentials
+flask

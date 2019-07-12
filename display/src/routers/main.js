@@ -120,7 +120,7 @@ router.post('/nlu', passport.authenticate('jwt', { session: false }), (req, res)
 }) ;
 
 router.post('/tone', passport.authenticate('jwt', { session:false }), (req,res)=>{
-	// TODO: call to the tone analyzer
+	// call to the tone analyzer
 	const friend = Friend.find({_id: req.body._id, owner: req.user._id});
 	const options1 = {
 		uri: process.env.FLASK_URL,

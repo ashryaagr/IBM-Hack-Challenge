@@ -2,6 +2,8 @@ const express = require('express') ;
 const passport = require('../passport') ;
 const Friend = require('../models/friend') ;
 const rp = require('request') ;
+const path = require('path') ;
+const fs = require('fs') ;
 const PersonalityInsightsV3 = require('ibm-watson/personality-insights/v3');
 const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1.js');
 const ToneAnalyzerV3 = require('ibm-watson/tone-analyzer/v3');
@@ -32,33 +34,49 @@ router.get('/', (req, res)=>{
 	res.send({ message : "<h1>Welcome to the backend service of the web app)</h1>" }) ;
 }) ;
 
-// flask endpoint to call for stack : https://localhost:8000/stack (for development version)
-// twitter(and all except stack): https://localhost:8000/ (for development version)
+const get_data = function (user_id, friend_id){
+	return new Promise(function (resolve, reject) {
+		try {
+			if (!fs.existsSync(path.join(process.env.cache_dir, '/'.concat(friend_id, '.txt')))) {
+				const friend = Friend.find({ _id: friend_id, owner: user_id}) ;
+				const options = {
+					uri: process.env.FLASK_URL,
+					body: {
+						'usernames': friend.usernames, // friend.usernames is a map from service name to the userid
+						'id': friend.id
+					},
+					method: 'POST'
+				};
+				rp(options).then((response) => {
+					resolve(response);
+				}).catch(err => {
+					reject(err);
+				})
+			} else {
+				resolve(friend_id)
+			}
+		}catch (e) {
+			reject(e)
+		}
+	})
+} ;
 
 router.post('/personality', passport.authenticate('jwt', { session:false }), (req, res)=>{
 	const friend = Friend.find({ _id: req.body._id, owner: req.user._id}) ;
-	const options1= {
-		uri: process.env.FLASK_URL,
-		json: true,
-		body : {
-			'usernames': friend.usernames,
-			'id': friend.id
-		},
-		method: 'POST'
-	} ;
-	rp(options1).then((response)=>{
-		return response ;
-	}).then((response)=>{
+	get_data(req.user_id, req.body._id).then(response=>{
 		if (!response) return res.status(500).send() ;
 		const profileParams = {
 			// Get the content from the JSON file.
-			content: require(''.concat(friend._id, '.json')),
-			content_type: 'application/json',
+			content: require(path.join(process.env.cache_dir, ''.concat(friend._id, '.json'))),
+			content_type: 'text/plain',
 			consumption_preferences: true,
 			raw_scores: true,
 		};
 		personalityInsights.profile(profileParams)
 			.then(profile => {
+				fs.writeFile(path.join(process.env.cache_dir, '/'.concat(friend._id, '-personality.json')), profile, (err) => {
+					if (err) return res.status(500).send(err)
+				});
 				res.send(profile);
 			}).catch(err => {
 				res.status(500).send(err)
@@ -71,32 +89,7 @@ router.post('/personality', passport.authenticate('jwt', { session:false }), (re
 router.post('/nlu', passport.authenticate('jwt', { session: false }), (req, res)=> {
 	// Call to the NLU service of ibm + coding interests from localhost:8000/stack
 	const friend = Friend.find({_id: req.body._id, owner: req.user._id});
-	var interests;
-	if (friend.usernames['stack']) {
-		const options2 = {
-			uri: ''.concat(process.env.FLASK_URL, '/stack'),
-			json: true,
-			body: {
-				'stack': friend.username['stack'] // would be null if user does not supply stack username
-			},
-			method: 'POST'
-		};
-		rp(options2).then((response) => {
-			interests = response
-		}).catch((err) => {
-			return res.status(500).send(err)
-		});
-	}
-	const options1 = {
-		uri: process.env.FLASK_URL,
-		json: true,
-		body: {
-			'usernames': friend.usernames,
-			'id': friend.id
-		},
-		method: 'POST',
-	};
-	rp(options1).then((response) => {
+	get_data(req.user_id, req.body._id).then((response) => {
 		return response;
 	}).then((response) => {
 		if (!response) return res.status(500).send();
@@ -106,12 +99,16 @@ router.post('/nlu', passport.authenticate('jwt', { session: false }), (req, res)
 				'categories': {
 					'limit': 10
 				},
-			'text' : require(''.concat(friend._id, '.json'))
+			'text': require(path.join(process.env.cache_dir, ''.concat(friend._id, '.json'))),
+			content_type: 'text/plain',
 			}
 		};
 		naturalLanguageUnderstanding.analyze(analyzeParams)
 			.then(analysisResults => {
-				res.send({analysisResults, interests})
+				fs.writeFile(path.join(process.env.cache_dir, '/'.concat(friend._id, '-nlu.json')), analysisResults, (err) => {
+					if (err) return res.status(500).send(err)
+				});
+				res.send(analysisResults)
 			})
 			.catch(err => {
 				res.status(500).send(err)
@@ -122,25 +119,20 @@ router.post('/nlu', passport.authenticate('jwt', { session: false }), (req, res)
 router.post('/tone', passport.authenticate('jwt', { session:false }), (req,res)=>{
 	// call to the tone analyzer
 	const friend = Friend.find({_id: req.body._id, owner: req.user._id});
-	const options1 = {
-		uri: process.env.FLASK_URL,
-		json: true,
-		body: {
-			'usernames': friend.usernames,
-			'id': friend.id
-		},
-		method: 'POST',
-	};
-	rp(options1).then((response) => {
-		return response;
-	}).then((response) => {
+	get_data(req.user_id, req.body._id).then((response) => {
 		if (!response) return res.status(500).send();
 		const toneParams = {
-			tone_input: { 'text': require(''.concat(friend._id, '.json')) },
-			content_type: 'application/json',
+			tone_input: {
+			'text' : require(path.join(process.env.cache_dir, ''.concat(friend._id, '.json'))),
+			},
+			content_type: 'text/plain',
+			sentences: false,
 		};
 		toneAnalyzer.tone(toneParams)
 			.then(toneAnalysis => {
+				fs.writeFile(path.join(process.env.cache_dir, '/'.concat(friend._id, '-tone.json')), toneAnalysis, (err) => {
+					if (err) return res.status(500).send(err)
+				});
 				res.send(toneAnalysis)
 			}).catch(err => {
 				res.status(500).send(err)

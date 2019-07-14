@@ -1,0 +1,24 @@
+{
+  "usage": {
+    "text_units": 1,
+    "text_characters": 1536,
+    "features": 1
+  },
+  "retrieved_url": "https://www.ibm.com/us-en/",
+  "categories": [
+    {
+      "score": 0.594296,
+      "label": "/technology and computing/software"
+    },
+    {
+      "score": 0.448495,
+      "label": "/science/mathematics/statistics"
+    },
+    {
+      "score": 0.426429,
+      "label": "/business and industrial"
+    }
+  ],
+  "language": "en"
+}
+

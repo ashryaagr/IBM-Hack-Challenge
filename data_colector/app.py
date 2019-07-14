@@ -59,11 +59,11 @@ class Reddit():
     #fill below credentials
     def __init__(self, username):
         pass
-        #self.reddit = praw.Reddit(client_id='',
-        #             client_secret='',
-        #            user_agent="")
-        #self.username = username
-        self.content = ''
+        # self.reddit = praw.Reddit(client_id='',
+        #              client_secret='',
+        #              user_agent="")
+        # self.username = username
+        # self.content = ''
 
     def get_submission_ids(self):
         user = self.reddit.redditor(self.username) 
@@ -97,16 +97,16 @@ def get_details():
     usernames = req_data['usernames']
     data_file = str(req_data["id"])+ '.txt'
 
-    if 'twitter' in 'usernames':
+    if usernames.get('twitter'):
         twitterid = usernames['twitter']
-    if 'stackid' in 'usernames':
+    if usernames.get('stack'):
         stackid = usernames['stack']
-    if 'redditid' in 'usernames':
+    if usernames.get('reddit'):
         redditid = usernames['reddit']
 
     if(stackid != None):
         stackoverflow_profile = Stackoverflow_Top_Tags(int(stackid))
-        coding_interests = profile.get_top_tags()
+        coding_interests = stackoverflow_profile.get_top_tags()
     
     if(twitterid != None):
         tweets = Tweets(str(twitterid))
@@ -121,7 +121,7 @@ def get_details():
     try:
         with open(data_file , 'w') as f:
             f.write(complete_data)
-        return 'success'
+        return complete_data
     except:
         abort(404)
 

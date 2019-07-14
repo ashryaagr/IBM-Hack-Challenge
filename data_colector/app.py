@@ -57,9 +57,9 @@ class Stackoverflow_Top_Tags():
 
 class Reddit():
     def __init__(self, username):
-        self.reddit = praw.Reddit(client_id='T1zqD38YsvnpGg',
-                     client_secret='Prm1CJ-Xbpcje4p7MAefXpnknVQ',
-                     user_agent="oauth2-app by /u/Gateway5557")
+        self.reddit = praw.Reddit(
+                     client_secret='
+                     )
         self.username = username
         self.content = ''
 

@@ -3,11 +3,13 @@ import stackapi
 import praw
 import json
 import twitter_credentials
-from flask import Flask
+from flask import Flask,request,abort
 
 complete_data = ''
 
+
 class Tweets():
+
     language_keys = {'ar': 'Arabic', 'bg': 'Bulgarian', 'ca': 'Catalan', 'cs': 'Czech', 'da': 'Danish', 'de': 'German', 'el': 'Greek', 'en': 'English', 'es': 'Spanish', 'et': 'Estonian',
          'fa': 'Persian', 'fi': 'Finnish', 'fr': 'French', 'hi': 'Hindi', 'hr': 'Croatian', 'hu': 'Hungarian', 'id': 'Indonesian', 'is': 'Icelandic', 'it': 'Italian', 'iw': 'Hebrew',
          'ja': 'Japanese', 'ko': 'Korean', 'lt': 'Lithuanian', 'lv': 'Latvian', 'ms': 'Malay', 'nl': 'Dutch', 'no': 'Norwegian', 'pl': 'Polish', 'pt': 'Portuguese', 'ro': 'Romanian',
@@ -54,14 +56,12 @@ class Stackoverflow_Top_Tags():
 
 
 class Reddit():
-    #fill below credentials
     def __init__(self, username):
-        pass
-        # self.reddit = praw.Reddit(client_id=add client id,
-        #              client_secret=add client secret,
-        #              user_agent= add user agent)
-        # self.username = username
-        # self.content = ''
+        self.reddit = praw.Reddit(client_id='T1zqD38YsvnpGg',
+                     client_secret='Prm1CJ-Xbpcje4p7MAefXpnknVQ',
+                     user_agent="oauth2-app by /u/Gateway5557")
+        self.username = username
+        self.content = ''
 
     def get_submission_ids(self):
         user = self.reddit.redditor(self.username) 
@@ -79,24 +79,51 @@ class Reddit():
 
 app = Flask(__name__)
 
-@app.route("/get_details/<twitter>/<reddit>/<int:stack>",methods=['GET'])
-def get_details(twitter , stack , reddit):
-    twitterid=twitter
-    stackid = stack
-    redditid = reddit
+@app.route("/",methods=['POST'])
+def get_details():
+    if(request.is_json):
+        req_data = request.get_json()
+    else:
+        return 'REQUEST NOT JSON'
 
-    profile = Stackoverflow_Top_Tags(stackid)
-    coding_interests = profile.get_top_tags()
+    twitterid = None
+    stackid = None
+    redditid = None
+    coding_interests = ''
+    tweet_plain_text = ''
+    reddit_content = ''
+    usernames = req_data['usernames']
+    data_file = str(req_data["id"])+ '.txt'
+
+    if 'twitter' in 'usernames':
+        twitterid = usernames['twitter']
+    if 'stackid' in 'usernames':
+        stackid = usernames['stack']
+    if 'redditid' in 'usernames':
+        redditid = usernames['reddit']
+
+    if(stackid != None):
+        stackoverflow_profile = Stackoverflow_Top_Tags(int(stackid))
+        coding_interests = profile.get_top_tags()
     
-    tweets = Tweets(str(twitterid))
-    tweet_plain_text , tweet_content_as_list , times , lang = tweets.get_tweet_details()
+    if(twitterid != None):
+        tweets = Tweets(str(twitterid))
+        tweet_plain_text , tweet_content_as_list , times , lang = tweets.get_tweet_details()
 
-    reddit_profile = Reddit(str(redditid))
-    reddit_content = reddit_profile.get_content()
+    if(redditid != None):
+        reddit_profile = Reddit(str(redditid))
+        reddit_content = reddit_profile.get_content()
      
     complete_data = tweet_plain_text + coding_interests + reddit_content
 
-    return "<p>" + tweet_plain_text + "</p>" +  "<p>" + reddit_content + "</p>" + "<p>" + "".join(coding_interests) + "</p>"
+    try:
+        with open(data_file , 'w') as f:
+            f.write(complete_data)
+        return 'success'
+    except:
+        abort(404)
+
+        
 
 if __name__ == '__main__':
     app.run(debug=True , port=8000)

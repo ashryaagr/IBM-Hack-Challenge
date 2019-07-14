@@ -2,7 +2,7 @@ var bodyParser = require('body-parser') ;
 require('./db/mongoose') ;
 const express = require('express') ;
 const passport = require('./passport') ;
-
+const path = require('path') ;
 const main_router = require('./routers/main') ;
 const auth_router = require('./routers/auth') ;
 const friend_router = require('./routers/friend') ;
@@ -10,8 +10,15 @@ const clustering_router = require('./routers/clustering') ;
 
 const app = express() ;
 
-// TODO: Tell express about out directory for out static files
+const publicDirectoryPath = path.join(__dirname, '../public') ;
 
+app.set('view engine', 'ejs');
+app.set('views', publicDirectoryPath) ;
+
+
+
+// Setup static directory to serve
+app.use(express.static(publicDirectoryPath)) ;
 
 app.use(passport.initialize()) ;
 

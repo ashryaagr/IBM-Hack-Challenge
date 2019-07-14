@@ -14,12 +14,11 @@ The data recieved from the ML model is processed here .
 ├── README.md
 ├── public
 │   ├── css
-│   ├── img
-│   └── js
+│   ├── js
+│   └── partials
 └── src
     ├── db
     ├── index.js
-    ├── middleware
     ├── models
     └── routers
 ```

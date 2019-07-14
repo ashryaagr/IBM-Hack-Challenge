@@ -31,7 +31,10 @@ const toneAnalyzer = new ToneAnalyzerV3({
 });
 
 router.get('/', (req, res)=>{
-	res.send({ message : "<h1>Welcome to the backend service of the web app)</h1>" }) ;
+	res.render('index', {
+		title : "Test Page",
+		message : "Welcome to the backend service of the web app"
+	}) ;
 }) ;
 
 const get_data = function (user_id, friend_id){

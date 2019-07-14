@@ -56,11 +56,13 @@ class Stackoverflow_Top_Tags():
 
 
 class Reddit():
+    #fill below credentials
     def __init__(self, username):
-        self.reddit = praw.Reddit(
-                     client_secret='
-                     )
-        self.username = username
+        pass
+        #self.reddit = praw.Reddit(client_id='',
+        #             client_secret='',
+        #            user_agent="")
+        #self.username = username
         self.content = ''
 
     def get_submission_ids(self):

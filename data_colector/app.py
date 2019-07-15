@@ -58,12 +58,11 @@ class Stackoverflow_Top_Tags():
 class Reddit():
     #fill below credentials
     def __init__(self, username):
-        pass
-        # self.reddit = praw.Reddit(client_id='',
-        #              client_secret='',
-        #              user_agent="")
-        # self.username = username
-        # self.content = ''
+        self.reddit = praw.Reddit(client_id='WTVgb9ztiapSeA',
+                     client_secret='JToqm6CLnSFLMcQYp6Qz2F0YFA0',
+                     user_agent="app by /u/ashryaagr")
+        self.username = username
+        self.content = ''
 
     def get_submission_ids(self):
         user = self.reddit.redditor(self.username) 
@@ -95,7 +94,7 @@ def get_details():
     tweet_plain_text = ''
     reddit_content = ''
     usernames = req_data['usernames']
-    data_file = str(req_data["id"])+ '.txt'
+    data_file = 'cache/' + str(req_data["id"])+ '.txt'
 
     if usernames.get('twitter'):
         twitterid = usernames['twitter']
@@ -121,7 +120,7 @@ def get_details():
     try:
         with open(data_file , 'w') as f:
             f.write(complete_data)
-        return complete_data
+        return req_data["id"]
     except:
         abort(404)
 

@@ -17,6 +17,8 @@
     
 - Update backend endpoints according to the frontend requirements.
 
+- Add a bash script to make the setup process easy.
+
 - Upload the ideation document in .doc or .pdf format with font size 12, single spacing, Times New Roman font. 
     The document should include the following details only:
     - What is the uniqueness/novelty added by you to the defined problem statement?

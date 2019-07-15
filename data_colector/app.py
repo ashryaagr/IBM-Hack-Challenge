@@ -1,8 +1,12 @@
 import tweepy
 import stackapi
 import praw
-import json
 import twitter_credentials
+import reddit_credentials
+import stackexchange_credentials
+import json
+import requests
+from html2text import html2text
 from flask import Flask,request,abort
 
 complete_data = ''
@@ -45,6 +49,7 @@ class Stackoverflow_Top_Tags():
     def __init__(self, stackexchange_id):
         self.id = stackexchange_id
         self.top_tags = ''
+        self.post_text =''
 
     def get_top_tags(self):
         site = stackapi.StackAPI('stackoverflow')
@@ -52,32 +57,30 @@ class Stackoverflow_Top_Tags():
         top_fields = fields['items'][:10]
         for field in list(top_fields):
             self.top_tags += field['tag_name'] + " "
-        return self.top_tags
+        return html2text(self.top_tags)
+
+    def get_posts_with_top_votes(self):
+        site = stackapi.StackAPI('stackoverflow' , client_id = stackexchange_credentials.CLIENT_ID , key = stackexchange_credentials.CLIENT_KEY)
+        site.max_pages = 1
+        site.page_size = 10
+        fields = site.fetch('users/{ids}/posts' , ids=[int(self.id)] , site="stackoverflow",sort='votes' , filter='withbody' ,order="desc")['items']
+        for field in fields:
+            self.post_text += html2text(field['body']) + ' '
+        return self.post_text
 
 
 class Reddit():
-    #fill below credentials
     def __init__(self, username):
-        pass
-        # self.reddit = praw.Reddit(client_id='',
-        #              client_secret='',
-        #              user_agent="")
-        # self.username = username
-        # self.content = ''
-
-    def get_submission_ids(self):
-        user = self.reddit.redditor(self.username) 
-        post_ids = user.submissions.new()
-        return post_ids
+        self.reddit = praw.Reddit(client_id=reddit_credentials.CLIENT_ID,
+                     client_secret=reddit_credentials.CLIENT_SECRET,
+                     user_agent=reddit_credentials.USER_AGENT)
+        self.username = username
+        self.content = ''
 
     def get_content(self):
-        post_ids = self.get_submission_ids()
-        for post_id in post_ids:
-            submission = self.reddit.submission(id=post_id)
+        for submission in self.reddit.redditor('ChrisTheOutdoorsman').submissions.new(limit = 30):
             self.content += submission.title + " " + submission.selftext + " "
         return self.content
-
-
 
 app = Flask(__name__)
 
@@ -92,6 +95,7 @@ def get_details():
     stackid = None
     redditid = None
     coding_interests = ''
+    stackoverflow_post_content =''
     tweet_plain_text = ''
     reddit_content = ''
     usernames = req_data['usernames']
@@ -106,7 +110,7 @@ def get_details():
 
     if(stackid != None):
         stackoverflow_profile = Stackoverflow_Top_Tags(int(stackid))
-        coding_interests = stackoverflow_profile.get_top_tags()
+        stackoverflow_post_content = stackoverflow_profile.get_posts_with_top_votes()
     
     if(twitterid != None):
         tweets = Tweets(str(twitterid))
@@ -116,7 +120,7 @@ def get_details():
         reddit_profile = Reddit(str(redditid))
         reddit_content = reddit_profile.get_content()
      
-    complete_data = tweet_plain_text + coding_interests + reddit_content
+    complete_data = tweet_plain_text + stackoverflow_post_content + reddit_content
 
     try:
         with open(data_file , 'w') as f:
@@ -124,8 +128,6 @@ def get_details():
         return complete_data
     except:
         abort(404)
-
-        
 
 if __name__ == '__main__':
     app.run(debug=True , port=8000)

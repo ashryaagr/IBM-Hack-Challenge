@@ -3,7 +3,7 @@ const passport = require('../passport') ;
 const Friend = require('../models/friend') ;
 const User = require('../models/user');
 const fs = require('fs')
-const clustering = require('density-clustering');
+
 
 const router = new express.Router() ;
 
@@ -24,7 +24,7 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 				var temp = 0;
 				for(let i = 0 ; i < 5 ; i++)
 					temp += Math.pow(1 - Math.abs(info['personality_insight']['personality'][i]['percentile'] - user_info['personality_insight']['personality'][i]['percentile']) , 2);
-				
+					affinities.push(Math.sqrt(temp / 5))
 				temp = temp / 5 ;
 
 				var y = 0;
@@ -42,14 +42,28 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 				total -= y;
 				temp += (Math.exp( (2*y - (total - y)) / total ) - Math.exp(-1)) / (Math.exp(2) - Math.exp(-1));
 				
-				affinities.push(Math.sqrt(temp / 2));
-				friends_id.push(friend._id)
+				affinities.push([Math.sqrt(temp / 2)]);
+				friends_id.push(friend._id);
+
+				return affinities;
+			}).then((affinities) =>{
+				var kmeans = new clustering.KMEANS();
+				var clusters = kmeans.run(affinities , 3);
+			
+				var categories = ['high' , 'medium' , 'low'];
+			
+				var firends_categories = {}
+			
+				for (let i = 0 ; i < 3 ; i++)
+				{
+					for(let j = 0 ;  j < clusters[i].length ; j++)
+						firends_categories[friends_id[j]] = categories[i];
+				}
+			
+				res.json(firends_categories);
 			});
 		}
 	})
-	var kmeans = new clustering.KMEANS();
-	var clusters = kmeans.run(affinities , 5);
-
 }) ;
 
 function get_info(id)

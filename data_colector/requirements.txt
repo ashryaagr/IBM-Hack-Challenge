@@ -2,3 +2,4 @@ tweepy
 stackapi
 flask
 praw
+html2text

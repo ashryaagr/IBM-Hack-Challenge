@@ -1,0 +1,2 @@
+CLIENT_ID="15774"
+CLIENT_KEY="dZYEmh0eGfo6rVpZ0GqfiQ(("

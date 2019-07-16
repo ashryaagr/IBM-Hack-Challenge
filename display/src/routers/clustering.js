@@ -7,26 +7,51 @@ const fs = require('fs')
 
 const router = new express.Router() ;
 
-var big_five = ['']
-
 router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, res)=>{
+	
+	//getting the data for the user
 	var current_user = req.user._id;
 	var user_info = get_info(current_user);
+	
+	//required initializations
 	var affinities = [];
-	var friends_id =[]
+	var friends_id =[];
+	var base_tones = ['anger' , 'fear' , 'joy' , 'sadness' , 'analytical' , 'confidence' , 'tentative'];
 
+	//preprocessing of the user's tone analyzer data
+	var user_tone = get_base_tone();
+
+	for(let i = 0 ; i<user_info['tone_analyzer']['tones'].length ; i++)
+		user_tone[user_info['tone_analyzer']['tones'][i]['tone_id']] = user_info['tone_analyzer']['tones'][i]['score'];
+
+	//Quering the friends of the current user
 	Friend.find({owner : current_user} , function(err , friends){
 		if (err)
 			res.status(400).send(err);
 		else{
 			friends.forEach((friend)=>{
+				
+				//getting the firend's data
 				var info = get_info(friend._id);
 				var temp = 0;
+
+				//personality insight data processing
 				for(let i = 0 ; i < 5 ; i++)
 					temp += Math.pow(1 - Math.abs(info['personality_insight']['personality'][i]['percentile'] - user_info['personality_insight']['personality'][i]['percentile']) , 2);
-					affinities.push(Math.sqrt(temp / 5))
-				temp = temp / 5 ;
 
+				//tone analyzer data processing
+				var curr_tone = get_base_tone();
+
+				for(let i = 0 ; i<info['tone_analyzer']['tones'].length ; i++)
+					curr_tone[info['tone_analyzer']['tones'][i]['tone_id']] = info['tone_analyzer']['tones'][i]['score'];
+
+				for(let i = 0 ; i < 7 ; i++)
+					temp += Math.pow(1 - Math.abs(curr_tone[base_tones[i]] - user_tone[base_tones[i]]) , 2);
+
+				//average of traits and tones
+				temp = Math.sqrt(temp / (5 + 7));
+
+				//nlu data processing
 				var y = 0;
 				var total = info['nlu']['categories'].length + user_info['nlu']['categories'].length;
 
@@ -42,11 +67,14 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 				total -= y;
 				temp += (Math.exp( (2*y - (total - y)) / total ) - Math.exp(-1)) / (Math.exp(2) - Math.exp(-1));
 				
-				affinities.push([Math.sqrt(temp / 2)]);
+				//adding calculated affinity
+				affinities.push([temp / 2]);
 				friends_id.push(friend._id);
 
 				return affinities;
 			}).then((affinities) =>{
+				
+				//clustering
 				var kmeans = new clustering.KMEANS();
 				var clusters = kmeans.run(affinities , 3);
 			
@@ -66,6 +94,7 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 	})
 }) ;
 
+//extracts data from cached json files
 function get_info(id)
 {
 	var nlu_data = JSON.parse(fs.readFileSync(`../../../cache/${id}-nlu.json`));
@@ -78,5 +107,19 @@ function get_info(id)
 		'tone_analyzer' : tone_data
 	}
 };
+
+//returns a base tone object
+function get_base_tone ()
+{
+	return {
+		'anger' : 0.25, 
+		'fear' : 0.25,
+		'joy' : 0.25,
+		'sadness' : 0.25, 
+		'analytical' : 0.25, 
+		'confidence' : 0.25, 
+		'tentative' : 0.25
+	}
+}
 
 module.exports = router ;

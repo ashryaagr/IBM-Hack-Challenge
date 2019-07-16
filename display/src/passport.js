@@ -15,12 +15,13 @@ passport.deserializeUser(function(id, done) {
 
 passport.use('login', new LocalStrategy(
 	function(username, password, done) {
-		User.findOne({ username: username }, function(err, user) {
+		User.findOne({ username: username }, async function(err, user) {
 			if (err) { return done(err); }
 			if (!user) {
 				return done(null, false, { message: 'Incorrect username.' });
 			}
-			if (!bcrypt.compare(password, user.password)) {
+			const match = await bcrypt.compare(password, user.password) ;
+			if (!match) {
 				return done(null, false, { message: 'Incorrect password.' });
 			}
 			return done(null, user);

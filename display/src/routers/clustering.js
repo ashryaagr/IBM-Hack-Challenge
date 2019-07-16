@@ -103,7 +103,7 @@ function get_info(id)
 
 	return {
 		'nlu' : nlu_data,
-		'personality_insightaffinities.push(Math.sqrt(temp / 5))' : personality_data,
+		'personality_insight' : personality_data,
 		'tone_analyzer' : tone_data
 	}
 };

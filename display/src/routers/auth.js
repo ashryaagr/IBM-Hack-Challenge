@@ -1,7 +1,7 @@
 const express = require('express') ;
 const passport = require('../passport') ;
 const User = require('../models/user') ;
-
+const Friend = require('../models/friend');
 const router = new express.Router() ;
 
 router.post('/login', passport.authenticate('login', {}), async (req, res)=>{
@@ -22,9 +22,21 @@ router.get('/logout', passport.authenticate('jwt', {}), async (req, res)=>{
 
 router.post('/user', async (req, res)=>{
 	const user = new User(req.body) ;
-	user.save().then((user)=>{
+	const friend_self = Friend({
+		name: user.name,
+		owner: user._id,
+		usernames: user.usernames
+	}) ;
+	user.reference = friend_self._id ;
+	friend_self.save()
+		.then(friend=>{
+			user.save()
+		.then((user)=>{
 		res.status(200).send({user})
-	}).catch((err)=>{
+		}).catch((err)=>{
+		res.status(400).send(err)
+	}) ;
+		}).catch((err)=>{
 		res.status(400).send(err)
 	}) ;
 }) ;

@@ -10,7 +10,7 @@ const router = new express.Router() ;
 router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, res)=>{
 	
 	//getting the data for the user
-	var current_user = req.user._id;
+	var current_user = req.user.reference; // we give reference to the user that we passed
 	var user_info = get_info(current_user);
 	
 	//required initializations
@@ -24,13 +24,12 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 	for(let i = 0 ; i<user_info['tone_analyzer']['tones'].length ; i++)
 		user_tone[user_info['tone_analyzer']['tones'][i]['tone_id']] = user_info['tone_analyzer']['tones'][i]['score'];
 
-	//Quering the friends of the current user
-	Friend.find({owner : current_user} , function(err , friends){
+	//Quering the friends of the current user except the reference for the current user himself
+	Friend.find({owner : current_user , _id : { $ne : current_user }} , function(err , friends){
 		if (err)
 			res.status(400).send(err);
 		else{
 			friends.forEach((friend)=>{
-				
 				//getting the firend's data
 				var info = get_info(friend._id);
 				var temp = 0;

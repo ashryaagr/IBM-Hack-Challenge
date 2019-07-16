@@ -31,6 +31,13 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+	usernames : {
+		type : Map,
+		of : String
+    } ,
+	reference : {
+		type: mongoose.Schema.Types.ObjectId,
+	},
     tokens: [{
         token: {
             type: String,

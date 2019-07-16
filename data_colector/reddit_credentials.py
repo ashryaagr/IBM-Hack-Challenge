@@ -1,0 +1,3 @@
+CLIENT_ID="WTVgb9ztiapSeA"
+CLIENT_SECRET="JToqm6CLnSFLMcQYp6Qz2F0YFA0"
+USER_AGENT="app by /u/ashryaagr"

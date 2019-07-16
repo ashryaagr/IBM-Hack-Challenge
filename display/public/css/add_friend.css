@@ -1,0 +1,15 @@
+.card{
+height: 430px;
+margin-top: auto;
+margin-bottom: auto;
+width: 400px;
+background-color: rgba(0,0,0,0.5) !important;
+}
+
+.input-group{
+	padding: 4px;
+}
+
+.submit-button{
+	margin-top: 20px;
+}

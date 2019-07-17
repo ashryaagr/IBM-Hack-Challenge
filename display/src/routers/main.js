@@ -4,6 +4,7 @@ const Friend = require('../models/friend') ;
 const User = require('../models/user') ;
 const fs = require('fs') ;
 const path = require('path') ;
+const cluster = require('clustering');
 
 router.get('/', (req, res)=>{
 	res.render('register') ;
@@ -54,5 +55,56 @@ router.get('/friend/:id/', (req, res)=>{
 		}) ;
 	}) ;
 }) ;
+
+router.get('/overview' , (req , res) =>{
+	cluster(req.user); //Is this neccessary? I'm not sure..
+
+	let user = req.user;
+
+	var user_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(user.reference, '-nlu.json')), 'utf-8')).categories ;
+	user_interests=[] ;
+	user_interests_json.forEach((item)=>{ user_interests.push(item.label.split('/').join(" "))}) ;
+
+	var friends_data = [];
+
+	Friend.find({owner : current_user , _id : { $ne : current_user }} , function(err , friends){
+
+		if (err)
+			throw Error(err.message) ;
+		else{
+			friends.forEach((friend)=>{
+				var friend_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-nlu.json')), 'utf-8')).categories ;
+				var friend_interests=[]; 
+
+				friend_interests_json.forEach((item)=>{friend_interests.push(item.label.split('/').join(" "))}) ;
+
+				let common_interests = friend_interests.filter(x=> user_interests.includes(x)) ;
+
+				friends_data.push({
+					name : friend.name || "No Name given", 
+					category : friend.category,
+					common_interests : common_interests
+				});
+
+				return friends_data;
+			}).then((friends_data) => {
+				let categories = {
+					high : 0,
+					medium : 0,
+					low : 0,
+				};
+
+				for(let i = 0; i<friends_data.length ; i++)
+					categories[friends_data[i].category]++;
+
+				res.render('overview' , {
+					friends_data , 
+					categories
+				});
+			});
+		}
+	});
+
+});
 
 module.exports = router ;

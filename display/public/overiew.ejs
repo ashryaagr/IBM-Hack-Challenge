@@ -11,7 +11,7 @@
 
         <link href="https://fonts.googleapis.com/css?family=Righteous+One&display=swap" rel="stylesheet"> 
 
-        <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="./css/dashboard.css" />
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
@@ -22,11 +22,11 @@
 
                 var data = google.visualization.arrayToDataTable([
                 ['Category', 'Number of friends'],
-                ['High Affinity',     11],
-                ['Medium Affinity',      5],
-                ['Low Affinity',  8]
+                ['High Affinity',     <%=categories['high']>],
+                ['Medium Affinity',      <%=categories['medium']>],
+                ['Low Affinity',  <%=categories['low']>]
                 ]);
-
+                high
                 var options = {
                 title: 'Category Classification'
                 };
@@ -51,9 +51,9 @@
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Overall</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+                    <li><a href="/overview"><span class="glyphicon glyphicon-dashboard"></span> Overall</a></li>
+                    <li><a href="/add_friend"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
                 </ul>
                 </div>
             </div>
@@ -68,34 +68,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                <td><a href="#" style="color:black">Abs Efg</a></td>
-                <td>High Affinity</td>
-                <td>
-                    <ul>
-                        <li>
-                            ML
-                        </li>
-                        <li>
-                            WebD
-                        </li>
-                    </ul>
-                </td>
-                </tr>
-                <tr>
-                <td><a href="#" style="color:black">Qwer Tyu</a></td>
-                <td>Medium Affinity</td>
-                <td>
-                    <ul>
-                        <li>
-                            AI
-                        </li>
-                        <li>
-                            Competitive
-                        </li>
-                    </ul>
-                </td>
-                </tr>   
+                <% friends_data.forEach((friend)=>{%>
+                    <tr>
+                    <td><a href="#" style="color:black"><%=friend.name%></a></td>
+                    <td><%=friend.category%></td>
+                    <td>
+                        <ul>
+                            <% friend.common_interests.forEach((interest)=>{%>
+                            <li>
+                                <%=interest%>
+                            </li>
+                            <% }) ;%>
+                        </ul>
+                    </td>
+                    </tr>
+                <% }) ;%>  
             </tbody>
         </table>
         <br>

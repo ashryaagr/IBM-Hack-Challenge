@@ -1,0 +1,20 @@
+.header {
+    font-family: 'Righteous', cursive;
+    background-color: lightgray;
+    padding:10px;margin:0px;
+    border-bottom: 5px solid black;
+}
+
+.display{
+    border:2px solid black;
+    border-radius: 3%;
+    width:98%;
+    margin:auto;
+    padding: 5px;
+    box-shadow: black 2px 2px 20px 2px;
+    font-size: 1.4vw;
+}
+
+.display span{
+    font-weight: bold;
+}

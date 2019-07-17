@@ -1,5 +1,7 @@
 $("#submit").click(function (event) {
 	event.preventDefault();
+	$("#submit").val('Adding...')
+	$("#submit").attr('disabled','disabled');
 	const body = {
 		username: $("#username").val(),
 		password: $("#password").val(),
@@ -18,7 +20,10 @@ $("#submit").click(function (event) {
 		},
 		error : function () {
 			alert("Invalid data/username/ids")
+			document.getElementById("submit").disabled = false ;
+			$("#submit").val("Submit")
 		}
   	});
+	document.getElementById("submit").disable = false ;
 	}
 ) ;

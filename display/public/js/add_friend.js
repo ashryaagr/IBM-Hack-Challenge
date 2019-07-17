@@ -1,5 +1,7 @@
 $("#submit").click(function (event) {
 	event.preventDefault();
+	$("#submit").val('Adding...')
+	$("#submit").attr('disabled','disabled');
 	const body = {
 		name: $("#name").val(),
 		stack: $("#stack").val(),
@@ -29,11 +31,15 @@ $("#submit").click(function (event) {
 		},
 		method: 'POST',
 		data: body,
-		success: function(){
+		success: function(id){
 			alert("Friend Successfully added")
+			document.getElementById("submit").disabled = false ;
+			window.location.href = window.location.origin + "/friend/" + id ;
 		},
 		error : function () {
 			alert("Could not add the friend. Try again")
+			document.getElementById("submit").disabled = false ;
+			$("#submit").val("Submit")
 		}
   	});
 	}

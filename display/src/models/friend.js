@@ -44,7 +44,15 @@ const friendSchema = new mongoose.Schema({
     },
 	affinity : {
     	type : Number
-	}
+	},
+	category : {
+    	type : String
+	},
+	common_interests : [{
+    	interest : {
+    		type: String,
+		}
+	}]
 });
 
 friendSchema.pre('save', async function (next) {

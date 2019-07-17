@@ -6,7 +6,6 @@ const path = require('path') ;
 const main_router = require('./routers/main') ;
 const auth_router = require('./routers/auth') ;
 const friend_router = require('./routers/friend') ;
-const clustering_router = require('./routers/clustering') ;
 
 const app = express() ;
 
@@ -32,6 +31,5 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })) ;
 app.use(main_router) ;
 app.use(auth_router) ;
 app.use(friend_router) ;
-app.use(clustering_router) ;
 
 module.exports = app;

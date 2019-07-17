@@ -15,18 +15,16 @@
         <script>
             google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(Personality);
-
             function Personality() {
                 var data = google.visualization.arrayToDataTable([
-                ['Personality Characteristics', 'Score'],
-                ['Openness',     0.5],
-                ['Conscientiousness',      0.63],
-                ['Extraversion',  0.34],
-                ['Agreeableness', 0.45],
-                ['Neuroticism' , 0.32]
+                	['Personality Characteristics', 'Score'],
+                    ['Openness', <%= A[0] %>],
+                    ['Conscientiousnes', <%= A[1] %>],
+                    ['Extraversion', <%= A[2] %> ],
+                    ['Agreeableness', <%= A[3] %> ],
+                    ['Emotional range', <%= A[4] %> ]
                 ]);
                 var chart = new google.visualization.BarChart(document.getElementById('barchart'));
-
                 chart.draw(data);
             }
         </script>
@@ -46,8 +44,8 @@
                 <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Overall</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+                    <li><a href="/add_friend"><span class="glyphicon glyphicon-plus"></span> Add Friend</a></li>
+                    <li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
                 </ul>
                 </div>
             </div>
@@ -65,17 +63,17 @@
             <div class="col-sm-6">
                 <ul style="list-style: none;">
                     <li>
-                        <span>Name</span> - Abc Efg
+                        <span>Name</span> - <%= friend_name %>
                     </li>
                     <li>
-                        <span>Friend of</span> - Qwert Yuio
+                        <span>Friend of</span> - <%= user_name %>
                     </li>
-                    <li>
+<!--                    <li>
                         <span>Calculated Affinity</span> - 0.1234
                     </li>
                     <li>
                         <span>Category</span> - Low Affinity
-                    </li>
+                    </li>-->
                     <li>
                         <div style="text-align: center">
                             <span>Personality Characteristics</span>
@@ -89,39 +87,43 @@
                     <li>
                         <span>Consumption preferences</span>
                         <ul>
-                            <li>
-                                Likely to be sensitive to ownership cost when buying automobiles
-                            </li>
-                            <li>
-                                Likely to eat out frequently
-                            </li>
+                            <% consumption_preferences.forEach(consumption_preference=>{%>
+                                <% consumption_preference.consumption_preferences.forEach(item=>{%>
+                                <li><%= item.name %></li>
+                                <% }) ;%>
+                            <% }) ;%>
                         </ul>
                     </li>
                     <li>
                         <span>Needs</span> 
                         <ul>
-                            <li>Challenge</li>
+                            <% needs.forEach(need=>{%>
+                                <li><%= need.name%></li>
+                            <% }) ;%>
                         </ul>
                     </li>
                     <li>
                         <span>Values</span> 
                         <ul>
-                            <li>Conservation</li>
+                            <% values.forEach(value=>{%>
+                            <li><%= value.name %></li>
+                            <% }) ;%>
                         </ul>
                     </li>
                     <li>
                         <span>Tones</span> 
                         <ul>
-                            <li>Sadness</li>
-                            <li>Analytical</li>
+                            <% tones.forEach((tone)=>{%>
+                                <li><%= tone.tone_name %></li>
+                            <% }) ;%>
                         </ul>
                     </li>
                     <li>
                         <span>Common Interests</span> 
                         <ul>
-                            <li>ML</li>
-                            <li>AI</li>
-                            <li>WebD</li>
+                            <% common_interests.forEach(interest=>{%>
+                                <li><%=interest%></li>
+                            <% }) ;%>
                         </ul>
                     </li>
                 </ul>

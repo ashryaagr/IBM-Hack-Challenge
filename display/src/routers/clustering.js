@@ -1,18 +1,11 @@
-const express = require('express') ;
-const passport = require('../passport') ;
 const Friend = require('../models/friend') ;
-const User = require('../models/user');
-const fs = require('fs')
+const fs = require('fs') ;
+const clustering = require('density-clustering') ;
 
-
-const router = new express.Router() ;
-
-router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, res)=>{
-	
-	//getting the data for the user
-	var current_user = req.user.reference; // we give reference to the user that we passed
+const cluster = function (user) {
+	var current_user = user.reference;
 	var user_info = get_info(current_user);
-	
+
 	//required initializations
 	var affinities = [];
 	var friends_id =[];
@@ -27,10 +20,10 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 	//Quering the friends of the current user except the reference for the current user himself
 	Friend.find({owner : current_user , _id : { $ne : current_user }} , function(err , friends){
 		if (err)
-			res.status(400).send(err);
+			throw Error(err.message) ;
 		else{
 			friends.forEach((friend)=>{
-				//getting the firend's data
+				//getting the friend's data
 				var info = get_info(friend._id);
 				var temp = 0;
 
@@ -62,36 +55,37 @@ router.get('/cluster', passport.authenticate('jwt', { session:false }), (req, re
 				for(let j = 0 ; j<info['nlu']['categories'].length ; j++)
 					if(info['nlu']['categories'][j]['label'] in current_values)
 						y++;
-				
+
 				total -= y;
 				temp += (Math.exp( (2*y - (total - y)) / total ) - Math.exp(-1)) / (Math.exp(2) - Math.exp(-1));
-				
+
 				//adding calculated affinity
+				friend.affinity = temp/2 ;
 				affinities.push([temp / 2]);
 				friends_id.push(friend._id);
 
 				return affinities;
 			}).then((affinities) =>{
-				
+
 				//clustering
 				var kmeans = new clustering.KMEANS();
 				var clusters = kmeans.run(affinities , 3);
-			
+
 				var categories = ['high' , 'medium' , 'low'];
-			
-				var firends_categories = {}
-			
+
+				var friends_categories = {}
+
 				for (let i = 0 ; i < 3 ; i++)
 				{
-					for(let j = 0 ;  j < clusters[i].length ; j++)
-						firends_categories[friends_id[j]] = categories[i];
+					for(let j = 0 ;  j < clusters[i].length ; j++){
+						friends_categories[friends_id[j]] = categories[i]
+						Friend.findByIdAndUpdate({category : categories[i]})
+					}
 				}
-			
-				res.json(firends_categories);
 			});
 		}
 	})
-}) ;
+} ;
 
 //extracts data from cached json files
 function get_info(id)
@@ -111,14 +105,14 @@ function get_info(id)
 function get_base_tone ()
 {
 	return {
-		'anger' : 0.25, 
+		'anger' : 0.25,
 		'fear' : 0.25,
 		'joy' : 0.25,
-		'sadness' : 0.25, 
-		'analytical' : 0.25, 
-		'confidence' : 0.25, 
+		'sadness' : 0.25,
+		'analytical' : 0.25,
+		'confidence' : 0.25,
 		'tentative' : 0.25
 	}
 }
 
-module.exports = router ;
+module.exports = cluster ;

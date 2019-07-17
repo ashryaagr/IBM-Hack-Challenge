@@ -14,7 +14,7 @@ router.post('/friend' , passport.authenticate('jwt', { session:false }) ,
 		} ;
         friend.owner = req.user._id ;
 		await friend.save().then((friend)=>{
-			res.status(200).send({friend})
+			res.status(200).send(friend._id)
 		}).catch((e)=>{
 			res.status(400).send(e) ;
 		}) ;

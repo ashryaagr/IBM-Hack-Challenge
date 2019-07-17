@@ -4,8 +4,10 @@ import praw
 import twitter_credentials
 import reddit_credentials
 import stackexchange_credentials
+import youtube_credentials
 import json
 import requests
+from apiclient.discovery import build 
 from html2text import html2text
 from flask import Flask,request,abort
 
@@ -82,6 +84,37 @@ class Reddit():
             self.content += submission.title + " " + submission.selftext + " "
         return self.content
 
+class Youtube():
+    def __init__(self , username):
+        self.text = ''
+        self.auth()
+        self.username = username
+        self.id = self.get_id(self.username)
+        
+    def auth(self):
+        self.youtube = build(youtube_credentials.YOUTUBE_API_SERVICE_NAME, youtube_credentials.YOUTUBE_API_VERSION , developerKey = youtube_credentials.DEVELOPER_KEY) 
+
+    def get_id(self , username):
+        request = self.youtube.channels().list(part="snippet,contentDetails,statistics",forUsername=username)
+        self.response = request.execute()
+        return self.response['items'][0]['id']
+
+    def get_channel_description(self):
+        self.text += self.response['items'][0]['snippet']['description'] + ' '
+
+    def get_playlists(self): 
+        request = self.youtube.playlists().list(part="snippet,contentDetails" , channelId=self.id , maxResults=50)    
+        response = request.execute()
+        fields = response['items']
+        for field in fields:
+            self.text += field['snippet']['title'] + field['snippet']['description'] + ' '
+    
+    def get_content(self):
+        self.get_channel_description()
+        self.get_playlists()
+        return self.text
+
+
 app = Flask(__name__)
 
 @app.route("/",methods=['POST'])
@@ -94,12 +127,13 @@ def get_details():
     twitterid = None
     stackid = None
     redditid = None
-    coding_interests = ''
+    youtubeid = None
     stackoverflow_post_content =''
     tweet_plain_text = ''
     reddit_content = ''
+    youtube_content =''
     usernames = req_data['usernames']
-    data_file = 'cache/' + str(req_data["id"])+ '.txt'
+    data_file = str(req_data["id"])+ '.txt'
 
     if usernames.get('twitter'):
         twitterid = usernames['twitter']
@@ -107,6 +141,8 @@ def get_details():
         stackid = usernames['stack']
     if usernames.get('reddit'):
         redditid = usernames['reddit']
+    if usernames.get('youtube'):
+        youtubeid = usernames['youtube']
 
     if(stackid != None):
         stackoverflow_profile = Stackoverflow_Top_Tags(int(stackid))
@@ -119,17 +155,19 @@ def get_details():
     if(redditid != None):
         reddit_profile = Reddit(str(redditid))
         reddit_content = reddit_profile.get_content()
+
+    if(youtubeid != None):
+        user = Youtube(str(youtubeid))
+        youtube_content = user.get_content()
      
-    complete_data = tweet_plain_text + stackoverflow_post_content + reddit_content
+    complete_data = tweet_plain_text + stackoverflow_post_content + reddit_content + youtube_content
 
     try:
         with open(data_file , 'w') as f:
             f.write(complete_data)
-        return req_data["id"]
+        return complete_data
     except:
         abort(404)
 
 if __name__ == '__main__':
     app.run(debug=True , port=8000)
-    
-

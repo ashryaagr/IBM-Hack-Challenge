@@ -2,11 +2,16 @@ const Friend = require('../models/friend') ;
 const express = require('express');
 const passport = require('../passport') ;
 
-const router = new express.Router()
+const router = new express.Router() ;
 
 router.post('/friend' , passport.authenticate('jwt', { session:false }) , 
     async (req , res) => {
         const friend = Friend(req.body) ;
+        friend.usernames = {
+        	stack : req.body.stack,
+			twitter : req.body.twitter,
+			reddit : req.body.reddit
+		} ;
         friend.owner = req.user._id ;
 		await friend.save().then((friend)=>{
 			res.status(200).send({friend})

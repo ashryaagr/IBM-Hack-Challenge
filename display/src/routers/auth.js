@@ -6,8 +6,8 @@ const router = new express.Router() ;
 
 router.post('/login', passport.authenticate('login', {}), async (req, res)=>{
 	const token = await req.user.generateAuthToken() ;
-	const user = req.user ;
-	res.send({ user, token}) ;
+	res.cookie('jwt', token) ;
+	res.redirect('/add_friend')
 });
 
 router.get('/logout', passport.authenticate('jwt', {}), async (req, res)=>{
@@ -22,6 +22,11 @@ router.get('/logout', passport.authenticate('jwt', {}), async (req, res)=>{
 
 router.post('/user', async (req, res)=>{
 	const user = new User(req.body) ;
+	user.usernames = {
+		stack : req.body.stack,
+		twitter : req.body.twitter,
+		reddit : req.body.reddit
+	};
 	const friend_self = Friend({
 		name: user.name,
 		owner: user._id,
@@ -32,7 +37,7 @@ router.post('/user', async (req, res)=>{
 		.then(friend=>{
 			user.save()
 		.then((user)=>{
-		res.status(200).send({user})
+		res.redirect('/login')
 		}).catch((err)=>{
 		res.status(400).send(err)
 	}) ;

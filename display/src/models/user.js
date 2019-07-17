@@ -21,16 +21,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8,
     },
-    email: {
-        type: String,
-        trim: true,
-        unique: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error('Email is invalid')
-            }
-        }
-    },
 	usernames : {
 		type : Map,
 		of : String

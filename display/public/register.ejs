@@ -22,16 +22,17 @@
                </div>
                <div class="card-body">
                   <form>
-                     <%- include('./login_partial.html') %>
-                     <%- include('./handles_partial.html') %>
+                     <%- include('./partials/login_partial.html') %>
+                     <%- include('./partials/add_friend_partial.html') %>
                      <div class="form-group submit-button">
-                        <input type="submit" value="Register" class="btn float-right submit_btn">
+                        <input id="submit" type="submit" value="Register" class="btn float-right submit_btn">
                      </div>
                   </form>
                </div>
             </div>
          </div>
       </div>
+   <script src="js/register.js"></script>
    </body>
 </html>
 

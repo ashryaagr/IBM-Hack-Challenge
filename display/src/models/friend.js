@@ -41,7 +41,10 @@ const friendSchema = new mongoose.Schema({
     usernames : {
         type : Map,
         of : String
-    } 
+    },
+	affinity : {
+    	type : Number
+	}
 });
 
 friendSchema.pre('save', async function (next) {

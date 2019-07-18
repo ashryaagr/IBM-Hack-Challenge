@@ -82,11 +82,17 @@ router.get('/overview' , passport.authenticate('jwt', { session: false }), (req 
 		low : 0,
 	};
 
-	Friend.find({owner : user._id } , function(err , friends){
-
+	Friend.find({owner : user._id , _id : { $ne: req.user.reference }} , function(err , friends){
 		if (err)
 			throw Error(err.message) ;
 		else{
+			var counter=0 ;
+			if (friends.length===0){
+				res.render('overview' , {
+					friends_data ,
+					categories
+				});
+			}
 			friends.forEach((friend)=>{
 				friends_data.push({
 					name : friend.name || "No Name given", 
@@ -95,17 +101,17 @@ router.get('/overview' , passport.authenticate('jwt', { session: false }), (req 
 					common_interests : friend.common_interests,
 					link_detail : `/friend/${friend._id}/`
 				});
+				counter++ ;
+				if (counter===friends.length){
+					for(let i = 0; i<friends_data.length ; i++)
+						categories[friends_data[i].category]++;
 
-				return friends_data;
-			}).then((friends_data) => {
-				for(let i = 0; i<friends_data.length ; i++)
-					categories[friends_data[i].category]++;
-
-				res.render('overview' , {
-					friends_data , 
-					categories
-				});
-			});
+						res.render('overview' , {
+							friends_data ,
+							categories
+						});
+				}
+			})
 		}
 	});
 

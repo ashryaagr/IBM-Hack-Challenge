@@ -18,10 +18,11 @@ const cluster = function (user) {
 		user_tone[user_info['tone_analyzer']['document_tone']['tones'][i]['tone_id']] = user_info['tone_analyzer']['document_tone']['tones'][i]['score'];
 
 	//Quering the friends of the current user except the reference for the current user himself
-	Friend.find({owner : current_user } , function(err , friends){
+	Friend.find({owner : user._id, _id : { $ne : current_user }} , function(err , friends){
 		if (err)
 			throw Error(err.message) ;
 		else{
+			var counter=0 ; // Number of times loop has been traversed
 			friends.forEach((friend)=>{
 				//getting the friend's data
 				var info = get_info(friend._id);
@@ -67,25 +68,25 @@ const cluster = function (user) {
 				affinities.push([temp / 2]);
 				friends_id.push(friend._id);
 
-				return affinities;
-			}).then((affinities) =>{
+				counter++ ;
+				if (counter===friends.length){
+					//clustering
+					var kmeans = new clustering.KMEANS();
+					var clusters = kmeans.run(affinities , 3);
 
-				//clustering
-				var kmeans = new clustering.KMEANS();
-				var clusters = kmeans.run(affinities , 3);
+					var categories = ['high' , 'medium' , 'low'];
 
-				var categories = ['high' , 'medium' , 'low'];
+					var friends_categories = {}
 
-				var friends_categories = {}
-
-				for (let i = 0 ; i < 3 ; i++)
-				{
-					for(let j = 0 ;  j < clusters[i].length ; j++){
-						friends_categories[friends_id[j]] = categories[i]
-						Friend.findByIdAndUpdate({category : categories[i]})
+					for (let i = 0 ; i < 3 ; i++)
+					{
+						for(let j = 0 ;  j < clusters[i].length ; j++){
+							friends_categories[friends_id[j]] = categories[i]
+							Friend.findByIdAndUpdate({category : categories[i]})
+						}
 					}
 				}
-			});
+			})
 		}
 	})
 } ;

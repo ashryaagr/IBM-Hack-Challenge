@@ -10,6 +10,7 @@ import requests
 from apiclient.discovery import build 
 from html2text import html2text
 from flask import Flask,request,abort
+from pathlib import Path
 
 complete_data = ''
 
@@ -133,7 +134,7 @@ def get_details():
     reddit_content = ''
     youtube_content =''
     usernames = req_data['usernames']
-    data_file = str(req_data["id"])+ '.txt'
+    data_file = Path(__file__).resolve().parent.parent + '/cache/' + str(req_data["id"])+ '.txt'
 
     if usernames.get('twitter'):
         twitterid = usernames['twitter']

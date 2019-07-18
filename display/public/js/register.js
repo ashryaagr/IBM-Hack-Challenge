@@ -8,7 +8,8 @@ $("#submit").click(function (event) {
 		name: $("#name").val(),
 		stack: $("#stack").val(),
 		reddit : $("#reddit").val(),
-		twitter : $("#twitter").val()
+		twitter : $("#twitter").val(),
+		youtube : $("youtube").val()
 	};
 	$.ajax({
 		url: "/user",

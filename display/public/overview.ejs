@@ -22,11 +22,10 @@
 
                 var data = google.visualization.arrayToDataTable([
                 ['Category', 'Number of friends'],
-                ['High Affinity',     <%=categories['high']>],
-                ['Medium Affinity',      <%=categories['medium']>],
-                ['Low Affinity',  <%=categories['low']>]
+                ['High Affinity',     <%=categories['high']%>],
+                ['Medium Affinity',      <%=categories['medium']%>],
+                ['Low Affinity',  <%=categories['low']%>]
                 ]);
-                high
                 var options = {
                 title: 'Category Classification'
                 };
@@ -63,6 +62,7 @@
             <thead>
                 <tr>
                 <th>Friend</th>
+                <th>Affinity</th>
                 <th>Category</th>
                 <th>Common Interest</th>
                 </tr>
@@ -70,7 +70,8 @@
             <tbody>
                 <% friends_data.forEach((friend)=>{%>
                     <tr>
-                    <td><a href="<%= link_detail %>" style="color:black"><%=friend.name%></a></td>
+                    <td><a href="<%= friend.link_detail %>" style="color:black"><%=friend.name%></a></td>
+                    <td><%= friend.affinity %></td>
                     <td><%=friend.category%></td>
                     <td>
                         <ul>

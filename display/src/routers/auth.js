@@ -25,7 +25,8 @@ router.post('/user', async (req, res)=>{
 	user.usernames = {
 		stack : req.body.stack,
 		twitter : req.body.twitter,
-		reddit : req.body.reddit
+		reddit : req.body.reddit,
+		youtube : req.body.youtube
 	};
 	const friend_self = Friend({
 		name: user.name,

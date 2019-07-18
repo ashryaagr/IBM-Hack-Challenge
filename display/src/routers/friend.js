@@ -10,7 +10,8 @@ router.post('/friend' , passport.authenticate('jwt', { session:false }) ,
         friend.usernames = {
         	stack : req.body.stack,
 			twitter : req.body.twitter,
-			reddit : req.body.reddit
+			reddit : req.body.reddit,
+			youtube : req.body.youtube
 		} ;
         friend.owner = req.user._id ;
 		await friend.save().then((friend)=>{

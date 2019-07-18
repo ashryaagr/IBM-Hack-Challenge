@@ -18,7 +18,7 @@ const cluster = function (user) {
 		user_tone[user_info['tone_analyzer']['document_tone']['tones'][i]['tone_id']] = user_info['tone_analyzer']['document_tone']['tones'][i]['score'];
 
 	//Quering the friends of the current user except the reference for the current user himself
-	Friend.find({owner : current_user , _id : { $ne : current_user }} , function(err , friends){
+	Friend.find({owner : current_user } , function(err , friends){
 		if (err)
 			throw Error(err.message) ;
 		else{
@@ -50,7 +50,7 @@ const cluster = function (user) {
 				var current_values = {};
 
 				for(let j = 0 ; j<user_info['nlu']['categories'].length ; j++)
-					currrent_values[user_info['nlu']['categories'][j]['label']] = 1;
+					current_values[user_info['nlu']['categories'][j]['label']] = 1;
 
 				for(let j = 0 ; j<info['nlu']['categories'].length ; j++)
 					if(info['nlu']['categories'][j]['label'] in current_values)
@@ -61,6 +61,9 @@ const cluster = function (user) {
 
 				//adding calculated affinity
 				friend.affinity = temp/2 ;
+				friend.save().catch(err=>{
+					throw Error(err.message) ;
+				}) ;
 				affinities.push([temp / 2]);
 				friends_id.push(friend._id);
 

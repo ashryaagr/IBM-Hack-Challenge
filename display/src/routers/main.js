@@ -12,7 +12,6 @@ router.get('/', (req, res)=>{
 }) ;
 
 router.get('/login', (req, res)=>{
-	console.log(req)
 	res.render('login') ;
 }) ;
 
@@ -40,10 +39,23 @@ router.get('/friend/:id/', (req, res)=>{
 			var friend_interests=[], user_interests=[] ;
 			var A = []
 			personality.forEach((item)=>{A.push([item.raw_score])}) ;
-			friend_interests_json.forEach((item)=>{friend_interests.push(item.label.split('/').join(" "))}) ;
+			var common_interests ;
 
-			user_interests_json.forEach((item)=>{ user_interests.push(item.label.split('/').join(" "))}) ;
-			let common_interests = friend_interests.filter(x=> user_interests.includes(x)) ;
+			if (! friend.common_interests) {
+				friend_interests_json.forEach((item) => {
+					friend_interests.push(item.label.split('/').join(" "))
+				});
+				user_interests_json.forEach((item) => {
+					user_interests.push(item.label.split('/').join(" "))
+				});
+				common_interests = friend_interests.filter(x => user_interests.includes(x));
+				friend.common_interests = common_interests;
+				friend.save().catch(err=> {
+					return res.status(500).send(err)
+				})
+			} else {
+				common_interests = friend.common_interests;
+			}
 			res.render('friend', {
 				A,
 				values,
@@ -58,45 +70,34 @@ router.get('/friend/:id/', (req, res)=>{
 	}) ;
 }) ;
 
-router.get('/overview' , passport.authenticate('jwt', {}), (req , res) =>{
-	cluster(req.user); //Is this neccessary? I'm not sure..
-
+router.get('/overview' , passport.authenticate('jwt', { session: false }), (req , res) =>{
+	cluster(req.user); //Is this neccessary? I'm not sure.. Ans: Yes it is...otherwise, how will we get the data affinities and categories.
 	let user = req.user;
-
-	var user_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(user.reference, '-nlu.json')), 'utf-8')).categories ;
-	user_interests=[] ;
-	user_interests_json.forEach((item)=>{ user_interests.push(item.label.split('/').join(" "))}) ;
 
 	var friends_data = [];
 
-	Friend.find({owner : user._id , _id : { $ne : user.reference }} , function(err , friends){
+	let categories = {
+		high : 0,
+		medium : 0,
+		low : 0,
+	};
+
+	Friend.find({owner : user._id } , function(err , friends){
 
 		if (err)
 			throw Error(err.message) ;
 		else{
 			friends.forEach((friend)=>{
-				var friend_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-nlu.json')), 'utf-8')).categories ;
-				var friend_interests=[]; 
-
-				friend_interests_json.forEach((item)=>{friend_interests.push(item.label.split('/').join(" "))}) ;
-
-				let common_interests = friend_interests.filter(x=> user_interests.includes(x)) ;
-
 				friends_data.push({
 					name : friend.name || "No Name given", 
 					category : friend.category,
-					common_interests : common_interests,
+					affinity : friend.affinity,
+					common_interests : friend.common_interests,
 					link_detail : `/friend/${friend._id}/`
 				});
 
 				return friends_data;
 			}).then((friends_data) => {
-				let categories = {
-					high : 0,
-					medium : 0,
-					low : 0,
-				};
-
 				for(let i = 0; i<friends_data.length ; i++)
 					categories[friends_data[i].category]++;
 

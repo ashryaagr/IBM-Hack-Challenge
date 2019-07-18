@@ -1,6 +1,7 @@
 const Friend = require('../models/friend') ;
 const fs = require('fs') ;
 const clustering = require('density-clustering') ;
+const path = require('path') ;
 
 const cluster = function (user) {
 	var current_user = user.reference;
@@ -13,9 +14,8 @@ const cluster = function (user) {
 
 	//preprocessing of the user's tone analyzer data
 	var user_tone = get_base_tone();
-
-	for(let i = 0 ; i<user_info['tone_analyzer']['tones'].length ; i++)
-		user_tone[user_info['tone_analyzer']['tones'][i]['tone_id']] = user_info['tone_analyzer']['tones'][i]['score'];
+	for(let i = 0 ; i<user_info['tone_analyzer']['document_tone']['tones'].length ; i++)
+		user_tone[user_info['tone_analyzer']['document_tone']['tones'][i]['tone_id']] = user_info['tone_analyzer']['document_tone']['tones'][i]['score'];
 
 	//Quering the friends of the current user except the reference for the current user himself
 	Friend.find({owner : current_user , _id : { $ne : current_user }} , function(err , friends){
@@ -34,8 +34,8 @@ const cluster = function (user) {
 				//tone analyzer data processing
 				var curr_tone = get_base_tone();
 
-				for(let i = 0 ; i<info['tone_analyzer']['tones'].length ; i++)
-					curr_tone[info['tone_analyzer']['tones'][i]['tone_id']] = info['tone_analyzer']['tones'][i]['score'];
+				for(let i = 0 ; i<info['tone_analyzer']['document_tone']['tones'].length ; i++)
+					curr_tone[info['tone_analyzer']['document_tone']['tones'][i]['tone_id']] = info['tone_analyzer']['document_tone']['tones'][i]['score'];
 
 				for(let i = 0 ; i < 7 ; i++)
 					temp += Math.pow(1 - Math.abs(curr_tone[base_tones[i]] - user_tone[base_tones[i]]) , 2);
@@ -90,9 +90,9 @@ const cluster = function (user) {
 //extracts data from cached json files
 function get_info(id)
 {
-	var nlu_data = JSON.parse(fs.readFileSync(`../../../cache/${id}-nlu.json`));
-	var personality_data = JSON.parse(fs.readFileSync(`../../../cache/${id}-personality.json`));
-	var tone_data = JSON.parse(fs.readFileSync(`../../../cache/${id}-tone.json`));
+	var nlu_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../../cache/${id}-nlu.json`)));
+	var personality_data = JSON.parse(fs.readFileSync(path.join(__dirname,`../../../cache/${id}-personality.json`)));
+	var tone_data = JSON.parse(fs.readFileSync(path.join(__dirname,`../../../cache/${id}-tone.json`)));
 
 	return {
 		'nlu' : nlu_data,

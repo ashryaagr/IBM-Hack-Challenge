@@ -32,7 +32,17 @@ passport.use('login', new LocalStrategy(
 var JwtStrategy = require('passport-jwt').Strategy,
 	ExtractJwt = require('passport-jwt').ExtractJwt;
 var opts = {} ;
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+
+var cookieExtractor = function(req) {
+    var token = null;
+    if (req && req.cookies)
+    {
+        token = req.cookies['jwt'];
+    }
+    return token;
+};
+
+opts.jwtFromRequest = ExtractJwt.fromExtractors([cookieExtractor, ExtractJwt.fromAuthHeaderAsBearerToken]);
 opts.secretOrKey = process.env.SECRET_KEY ;
 
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {

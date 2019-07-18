@@ -6,6 +6,7 @@ const path = require('path') ;
 const main_router = require('./routers/main') ;
 const auth_router = require('./routers/auth') ;
 const friend_router = require('./routers/friend') ;
+const cookieParser = require('cookie-parser') ;
 
 const app = express() ;
 
@@ -27,6 +28,9 @@ app.use(bodyParser.urlencoded({ extended: false })) ;
 app.use(bodyParser.json()) ;
 // parse application/vnd.api+json as json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })) ;
+
+// parses cookies and gives an object req.cookies
+app.use(cookieParser()) ;
 
 app.use(main_router) ;
 app.use(auth_router) ;

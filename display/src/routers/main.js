@@ -4,13 +4,15 @@ const Friend = require('../models/friend') ;
 const User = require('../models/user') ;
 const fs = require('fs') ;
 const path = require('path') ;
-const cluster = require('clustering');
+const cluster = require('./clustering');
+const passport = require('../passport') ;
 
 router.get('/', (req, res)=>{
 	res.render('register') ;
 }) ;
 
 router.get('/login', (req, res)=>{
+	console.log(req)
 	res.render('login') ;
 }) ;
 
@@ -56,7 +58,7 @@ router.get('/friend/:id/', (req, res)=>{
 	}) ;
 }) ;
 
-router.get('/overview' , (req , res) =>{
+router.get('/overview' , passport.authenticate('jwt', {}), (req , res) =>{
 	cluster(req.user); //Is this neccessary? I'm not sure..
 
 	let user = req.user;
@@ -67,7 +69,7 @@ router.get('/overview' , (req , res) =>{
 
 	var friends_data = [];
 
-	Friend.find({owner : current_user , _id : { $ne : current_user }} , function(err , friends){
+	Friend.find({owner : user._id , _id : { $ne : user.reference }} , function(err , friends){
 
 		if (err)
 			throw Error(err.message) ;

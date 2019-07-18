@@ -85,7 +85,8 @@ router.get('/overview' , passport.authenticate('jwt', {}), (req , res) =>{
 				friends_data.push({
 					name : friend.name || "No Name given", 
 					category : friend.category,
-					common_interests : common_interests
+					common_interests : common_interests,
+					link_detail : `/friend/${friend._id}/`
 				});
 
 				return friends_data;

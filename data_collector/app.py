@@ -134,7 +134,7 @@ def get_details():
     reddit_content = ''
     youtube_content =''
     usernames = req_data['usernames']
-    data_file = Path(__file__).resolve().parent.parent + '/cache/' + str(req_data["id"])+ '.txt'
+    data_file = str(Path(__file__).resolve().parent.parent) + '/cache/' + str(req_data["id"])+ '.txt'
 
     if usernames.get('twitter'):
         twitterid = usernames['twitter']

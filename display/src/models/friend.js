@@ -79,7 +79,7 @@ friendSchema.pre('save', async function (next) {
 	const profileParams = {
 		content: data.toString() ,
 		content_type: 'text/plain',
-		consumption_preferences: false,
+		consumption_preferences: true,
 		raw_scores: true,
 	};
 	personalityInsights.profile(profileParams)

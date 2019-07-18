@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 8,
     },
 	usernames : {
 		type : Map,
@@ -45,9 +44,6 @@ userSchema.virtual('friends', {
 
 userSchema.pre('save', async function (next) {
 	const user = this ;
-	if (user.email)
-		validator.normalizeEmail(user.email, [ true, true, true, true, true, true, true, true,
-			true, true, true]) ;;
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8)
 	}

@@ -3,6 +3,7 @@ const fs = require('fs') ;
 const clustering = require('density-clustering') ;
 const path = require('path') ;
 
+
 const cluster = function (user) {
 	var current_user = user.reference;
 	var user_info = get_info(current_user);
@@ -62,9 +63,7 @@ const cluster = function (user) {
 
 				//adding calculated affinity
 				friend.affinity = temp/2 ;
-				friend.save().catch(err=>{
-					throw Error(err.message) ;
-				}) ;
+				
 				affinities.push([temp / 2]);
 				friends_id.push(friend._id);
 
@@ -87,13 +86,14 @@ const cluster = function (user) {
 
 						var categories = ['high' , 'medium' , 'low'];
 
-						var friends_categories = {}
 
 						for (let i = 0 ; i < n ; i++)
 						{
 							for(let j = 0 ;  j < clusters[i].length ; j++){
-								friends_categories[friends_id[j]] = categories[i]
-								Friend.findByIdAndUpdate({category : categories[i]})
+								friends[j].category = categories[i];
+								friends[j].save().catch((err)=>{
+									throw Error(err.message) ;
+								});
 							}
 						}
 					}

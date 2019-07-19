@@ -29,6 +29,7 @@ router.get('/friend/:id/', (req, res)=>{
 		if (err)
 			return res.status(500).send() ;
 		User.findById(friend.owner, function(err, user){
+			console.log(user);
 			cluster(user);
 			if (err)
 				return res.status(400).send() ;

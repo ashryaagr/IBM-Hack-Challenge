@@ -89,7 +89,7 @@ const cluster = function (user) {
 
 						var friends_categories = {}
 
-						for (let i = 0 ; i < 3 ; i++)
+						for (let i = 0 ; i < n ; i++)
 						{
 							for(let j = 0 ;  j < clusters[i].length ; j++){
 								friends_categories[friends_id[j]] = categories[i]

@@ -26,9 +26,11 @@ router.get('/add_friend',  (req, res)=>{
 router.get('/friend/:id/', (req, res)=>{
 
 	Friend.findById(req.params.id, function (err, friend) {
-		if (err) res.status(400).send() ;
+		if (err)
+			return res.status(500).send() ;
 		User.findById(friend.owner, function(err, user){
-			if (err) res.status(400).send() ;
+			if (err)
+				return res.status(400).send() ;
 			var personalityInsights = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-personality.json')), 'utf-8')) ;
 			var friend_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-nlu.json')), 'utf-8')).categories ;
 			var user_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(user.reference, '-nlu.json')), 'utf-8')).categories ;
@@ -41,7 +43,7 @@ router.get('/friend/:id/', (req, res)=>{
 			var A = []
 			personality.forEach((item)=>{A.push([item.raw_score])}) ;
 			var common_interests ;
-			if (friend.common_interests.length == 0) {
+			if (friend.common_interests.length === 0) {
 				friend_interests_json.forEach((item) => {
 					friend_interests.push(item.label.split('/').join(" "))
 				});
@@ -72,7 +74,7 @@ router.get('/friend/:id/', (req, res)=>{
 	}) ;
 }) ;
 
-router.get('/overview' , passport.authenticate('jwt', { session: false }), (req , res) =>{
+router.get('/overview' , passport.authenticate('cookie', { session: false }), (req , res) =>{
 	cluster(req.user); //Is this neccessary? I'm not sure.. Ans: Yes it is...otherwise, how will we get the data affinities and categories.
 	let user = req.user;
 
@@ -107,7 +109,6 @@ router.get('/overview' , passport.authenticate('jwt', { session: false }), (req 
 				if (counter===friends.length){
 					for(let i = 0; i<friends_data.length ; i++)
 						categories[friends_data[i].category]++;
-
 						res.render('overview' , {
 							friends_data ,
 							categories

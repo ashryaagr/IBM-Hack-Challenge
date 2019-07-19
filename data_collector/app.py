@@ -39,13 +39,14 @@ class Tweets():
     def get_tweet_details(self):
         tweets =  self.api.user_timeline(screen_name=self.username, count=500,tweet_mode='extended')
         for tweet in tweets:
-            self.tweet_text += tweet.full_text + " "
-            self.tweet_list.append(tweet.full_text)
-            self.tweet_time.append(tweet.created_at)
             lang = str(tweet.lang)
             if lang == "et":
                 lang="en"
-            self.tweet_lang.append(self.language_keys[lang])
+            if (lang=="en"):
+                self.tweet_text += tweet.full_text + " "
+                self.tweet_list.append(tweet.full_text)
+                self.tweet_time.append(tweet.created_at)
+                self.tweet_lang.append(self.language_keys[lang])
         return (self.tweet_text , self.tweet_list , self.tweet_time , self.tweet_lang)
 
 class Stackoverflow_Top_Tags():

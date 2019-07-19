@@ -1,6 +1,6 @@
 $("#submit").click(function (event) {
 	event.preventDefault();
-	$("#submit").val('Adding...') ;
+	$("#submit").val('Verifying...') ;
 	$("#submit").attr('disabled','disabled');
 	const body = {
 		username: $("#username").val(),

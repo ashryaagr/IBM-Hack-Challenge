@@ -66,10 +66,12 @@ friendSchema.pre('save', async function (next) {
 	function doRequest() {
 		return new Promise(function (resolve, reject) {
 			request.post(process.env.FLASK_URL, post, function (error, res, body) {
-				if (!error && body) {
+				if (!error && (body.split(' ').length > 100)) {
 					resolve(body);
-				} else {
+				} else if (error) {
 					reject(error);
+				} else {
+					reject("Not sufficient data to analyze")
 				}
 			});
 		});

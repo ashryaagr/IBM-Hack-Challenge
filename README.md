@@ -4,20 +4,11 @@
 - The project consists of 2 servers
 - First server is wriiten on flask. It collects data from twitter, stack, etc .
 - Second server is written on node. It provides the interface for user to interact with .
-  It also has the ML model that performs k means clustering analysis to get categories of friends .
+  It also has the ML algorithm that performs k means clustering analysis to get categories of friends .
 
 ## TODOs
-- Make the following pages for frontend and link them with node endpoints. Note that UI/UX will be given a good amount of wieghtage.
-    - Login Page
-    - Registration Page ( we will also take user's social media usernames here)
-    - Page to add friends and get their friend affinity
-    - Page to list all friends vs category ( i.e. for clustering )
-    - Partial for menu/navigation bar
-    - Do data visualisation using some charting library
-    
-- Update backend endpoints according to the frontend requirements.
 
-- Add a bash script to make the setup process easy.
+- Add a Dockerfile to make the setup process easy.
 
 - Upload the ideation document in .doc or .pdf format with font size 12, single spacing, Times New Roman font. 
     The document should include the following details only:

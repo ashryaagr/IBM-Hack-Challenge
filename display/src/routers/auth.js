@@ -3,11 +3,25 @@ const passport = require('../passport') ;
 const User = require('../models/user') ;
 const Friend = require('../models/friend');
 const router = new express.Router() ;
+const bcrypt = require('bcryptjs') ;
 
-router.post('/login', passport.authenticate('login', {}), async (req, res)=>{
-	const token = await req.user.generateAuthToken() ;
-	res.cookie('jwt', token) ;
-	res.redirect('/add_friend')
+router.post('/login', async (req, res)=>{
+
+	User.findOne({ username: req.body.username }, async function(err, user) {
+		if (err) {
+			return res.status(500).send();
+		}
+		if (!user) {
+			return res.status(400).send("No such username");
+		}
+		const match = await bcrypt.compare(req.body.password, user.password);
+		if (!match) {
+			return res.status(400).send("Incorrect username") ;
+		}
+		const token = await user.generateAuthToken() ;
+		res.cookie('jwt', token) ;
+		res.redirect('/add_friend') ;
+	}) ;
 });
 
 router.get('/logout', passport.authenticate('jwt', {}), async (req, res)=>{

@@ -37,8 +37,9 @@ $("#submit").click(function (event) {
 			document.getElementById("submit").disabled = false ;
 			window.location.href = window.location.origin + "/friend/" + id ;
 		},
-		error : function () {
-			alert("Could not add the friend. Try again")
+		error : function (error) {
+			if (!error)alert("Could not add the friend. Try again") ;
+			else alert(error.message)
 			document.getElementById("submit").disabled = false ;
 			$("#submit").val("Submit")
 		}

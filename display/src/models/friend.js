@@ -49,9 +49,7 @@ const friendSchema = new mongoose.Schema({
     	type : String
 	},
 	common_interests : [{
-    	interest : {
-    		type: String,
-		}
+			type : String
 	}]
 });
 

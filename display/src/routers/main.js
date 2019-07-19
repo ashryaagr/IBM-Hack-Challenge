@@ -29,6 +29,7 @@ router.get('/friend/:id/', (req, res)=>{
 		if (err)
 			return res.status(500).send() ;
 		User.findById(friend.owner, function(err, user){
+			cluster(user);
 			if (err)
 				return res.status(400).send() ;
 			var personalityInsights = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-personality.json')), 'utf-8')) ;
@@ -59,8 +60,8 @@ router.get('/friend/:id/', (req, res)=>{
 				common_interests = friend.common_interests;
 			}
 			res.render('friend', {
-				// affinity : friend.affinity,
-				// category : friend.category,
+				affinity : friend.affinity,
+				category : friend.category,
 				A,
 				values,
 				needs,

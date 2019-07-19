@@ -19,11 +19,12 @@ router.get('/register', (req, res)=>{
 	res.render('register') ;
 }) ;
 
-router.get('/add_friend', (req, res)=>{
+router.get('/add_friend',  (req, res)=>{
 	res.render('add_friend') ;
 }) ;
 
 router.get('/friend/:id/', (req, res)=>{
+
 	Friend.findById(req.params.id, function (err, friend) {
 		if (err) res.status(400).send() ;
 		User.findById(friend.owner, function(err, user){
@@ -40,7 +41,6 @@ router.get('/friend/:id/', (req, res)=>{
 			var A = []
 			personality.forEach((item)=>{A.push([item.raw_score])}) ;
 			var common_interests ;
-
 			if (friend.common_interests.length == 0) {
 				friend_interests_json.forEach((item) => {
 					friend_interests.push(item.label.split('/').join(" "))
@@ -57,6 +57,8 @@ router.get('/friend/:id/', (req, res)=>{
 				common_interests = friend.common_interests;
 			}
 			res.render('friend', {
+				// affinity : friend.affinity,
+				// category : friend.category,
 				A,
 				values,
 				needs,

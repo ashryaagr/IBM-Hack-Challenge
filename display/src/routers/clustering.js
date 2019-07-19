@@ -70,19 +70,31 @@ const cluster = function (user) {
 
 				counter++ ;
 				if (counter===friends.length){
+
 					//clustering
+					var n = 3;
+					if(friends.length < 3)
+						n = friends.length;
 					var kmeans = new clustering.KMEANS();
-					var clusters = kmeans.run(affinities , 3);
 
-					var categories = ['high' , 'medium' , 'low'];
-
-					var friends_categories = {}
-
-					for (let i = 0 ; i < 3 ; i++)
+					if (n!=0)
 					{
-						for(let j = 0 ;  j < clusters[i].length ; j++){
-							friends_categories[friends_id[j]] = categories[i]
-							Friend.findByIdAndUpdate({category : categories[i]})
+						var clusters = kmeans.run(affinities , n);
+
+						clusters.sort((a , b)=>{
+							return affinities[b[0]] - affinities[a[0]];
+						});
+
+						var categories = ['high' , 'medium' , 'low'];
+
+						var friends_categories = {}
+
+						for (let i = 0 ; i < 3 ; i++)
+						{
+							for(let j = 0 ;  j < clusters[i].length ; j++){
+								friends_categories[friends_id[j]] = categories[i]
+								Friend.findByIdAndUpdate({category : categories[i]})
+							}
 						}
 					}
 				}

@@ -41,7 +41,7 @@ router.get('/friend/:id/', (req, res)=>{
 			personality.forEach((item)=>{A.push([item.raw_score])}) ;
 			var common_interests ;
 
-			if (! friend.common_interests) {
+			if (friend.common_interests.length == 0) {
 				friend_interests_json.forEach((item) => {
 					friend_interests.push(item.label.split('/').join(" "))
 				});

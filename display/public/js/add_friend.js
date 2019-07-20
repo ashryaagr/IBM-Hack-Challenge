@@ -24,7 +24,7 @@ $("#submit").click(function (event) {
 		}
 		return "";
 	}
-	token = getCookie('jwt') ;
+	var token = getCookie('jwt') ;
 	$.ajax({
 		url: "/friend",
 		headers: {

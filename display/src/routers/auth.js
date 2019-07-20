@@ -24,7 +24,7 @@ router.post('/login', async (req, res)=>{
 	}) ;
 });
 
-router.get('/logout', passport.authenticate('jwt', {}), async (req, res)=>{
+router.get('/logout', passport.authenticate('cookie', {}), async (req, res)=>{
 	try {
 		req.user.tokens = req.user.tokens.filter((token) => !req.headers.authorization.includes(token.token)) ;
 		await req.user.save() ;

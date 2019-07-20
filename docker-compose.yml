@@ -1,0 +1,18 @@
+version: '2'
+services:
+    data_collector:
+        build: ./data_collector
+        restart: always
+        ports:
+            - "8000:8000"
+        command: python app.py
+    display:
+        build: ./display
+        restart: always
+        ports:
+            - "3000:3000"
+    mongo:
+        container_name: mongo
+        image: mongo
+        ports:
+          - "27017:27017"

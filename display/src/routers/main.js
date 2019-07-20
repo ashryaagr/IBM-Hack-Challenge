@@ -19,7 +19,7 @@ router.get('/register', (req, res)=>{
 	res.render('register') ;
 }) ;
 
-router.get('/add_friend',  (req, res)=>{
+router.get('/add_friend',  passport.authenticate('cookie', {session: false}), (req, res)=>{
 	res.render('add_friend') ;
 }) ;
 

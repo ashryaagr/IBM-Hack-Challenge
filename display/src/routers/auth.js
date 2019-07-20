@@ -24,11 +24,12 @@ router.post('/login', async (req, res)=>{
 	}) ;
 });
 
-router.get('/logout', passport.authenticate('cookie', {}), async (req, res)=>{
+router.get('/logout', passport.authenticate('cookie', {}), (req, res)=>{
 	try {
-		req.user.tokens = req.user.tokens.filter((token) => !req.headers.authorization.includes(token.token)) ;
-		await req.user.save() ;
-		res.send()
+		req.user.tokens = req.user.tokens.filter((token) => token.token!==req.cookies.jwt) ;
+		req.user.save() ;
+		res.clearCookie('jwt') ;
+		res.redirect('/login')
 	} catch (e) {
 		res.status(500).send() ;
 	}

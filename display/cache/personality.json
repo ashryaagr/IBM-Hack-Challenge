@@ -1,0 +1,137 @@
+{
+  "word_count": 15223,
+  "processed_language": "en",
+  "personality": [
+    {
+      "trait_id": "big5_openness",
+      "name": "Openness",
+      "category": "personality",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true,
+      "children": [
+        {
+          "trait_id": "facet_adventurousness",
+          "name": "Adventurousness",
+          "category": "personality",
+          "percentile": 0.5,
+          "raw_score": 0.5,
+          "significant": true
+        }
+      ]
+    },
+    {
+      "trait_id": "big5_conscientiousness",
+      "name": "Conscientiousness",
+      "category": "personality",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true,
+      "children": [
+        {
+          "trait_id": "facet_achievement_striving",
+          "name": "Achievement striving",
+          "category": "personality",
+          "percentile": 0.5,
+          "raw_score": 0.5,
+          "significant": true
+        }
+      ]
+    },
+    {
+      "trait_id": "big5_extraversion",
+      "name": "Extraversion",
+      "category": "personality",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true,
+      "children": [
+        {
+          "trait_id": "facet_activity_level",
+          "name": "Activity level",
+          "category": "personality",
+          "percentile": 0.5,
+          "raw_score": 0.5,
+          "significant": true
+        }
+      ]
+    },
+    {
+      "trait_id": "big5_agreeableness",
+      "name": "Agreeableness",
+      "category": "personality",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true,
+      "children": [
+        {
+          "trait_id": "facet_altruism",
+          "name": "Altruism",
+          "category": "personality",
+          "percentile": 0.5,
+          "raw_score": 0.5,
+          "significant": true
+        }
+      ]
+    },
+    {
+      "trait_id": "big5_neuroticism",
+      "name": "Emotional range",
+      "category": "personality",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true,
+      "children": [
+        {
+          "trait_id": "facet_anger",
+          "name": "Fiery",
+          "category": "personality",
+          "percentile": 0.5,
+          "raw_score": 0.5,
+          "significant": true
+        }
+      ]
+    }
+  ],
+  "needs": [
+    {
+      "trait_id": "need_challenge",
+      "name": "Challenge",
+      "category": "needs",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true
+    },
+    {
+      "trait_id": "need_closeness",
+      "name": "Closeness",
+      "category": "needs",
+      "percentile": 0.5,
+      "raw_score": 0.5,
+      "significant": true
+    }
+  ],
+  "values": [ ],
+  "behavior": [
+    {
+      "trait_id": "behavior_sunday",
+      "name": "Sunday",
+      "category": "behavior",
+      "percentage": 0.5
+    },
+    {
+      "trait_id": "behavior_monday",
+      "name": "Monday",
+      "category": "behavior",
+      "percentage": 0.5
+    },
+    {
+      "trait_id": "behavior_saturday",
+      "name": "Saturday",
+      "category": "behavior",
+      "percentage": 0.5
+    }
+  ],
+  "consumption_preferences": [],
+  "warnings": []
+}

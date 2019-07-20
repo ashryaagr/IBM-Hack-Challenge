@@ -106,9 +106,23 @@ const cluster = function (user) {
 //extracts data from cached json files
 function get_info(id)
 {
-	var nlu_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../../cache/${id}-nlu.json`)));
-	var personality_data = JSON.parse(fs.readFileSync(path.join(__dirname,`../../../cache/${id}-personality.json`)));
-	var tone_data = JSON.parse(fs.readFileSync(path.join(__dirname,`../../../cache/${id}-tone.json`)));
+	var nlu_data, personality_data, tone_data;
+	// Some sanity check..
+	try {
+		nlu_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../cache/${id}-nlu.json`)));
+	}catch(e) {
+		nlu_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../cache/nlu.json`)))
+	}
+	try {
+		personality_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../cache/${id}-personality.json`)));
+	}catch(e) {
+		personality_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../cache/personality.json`)));
+	}
+	try {
+		tone_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../cache/${id}-tone.json`)));
+	}catch (e) {
+		tone_data = JSON.parse(fs.readFileSync(path.join(__dirname, `../../cache/tone.json`)));
+	}
 
 	return {
 		'nlu' : nlu_data,

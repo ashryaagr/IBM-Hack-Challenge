@@ -1,18 +1,28 @@
-version: '2'
+version: '3'
 services:
     data_collector:
         build: ./data_collector
         restart: always
         ports:
-            - "8000:8000"
+            - 8000:8000
+        expose:
+          - 8000
         command: python app.py
     display:
         build: ./display
+        env_file:
+          - ./display/config/dev.env
         restart: always
         ports:
-            - "3000:3000"
+            - 3000:3000
+        expose:
+          - 3000
+        links:
+          - mongo
     mongo:
         container_name: mongo
         image: mongo
+        expose:
+          - 27017
         ports:
           - "27017:27017"

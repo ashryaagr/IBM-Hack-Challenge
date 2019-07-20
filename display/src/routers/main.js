@@ -32,10 +32,27 @@ router.get('/friend/:id/', (req, res)=>{
 			cluster(user);
 			if (err)
 				return res.status(400).send() ;
-			var personalityInsights = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-personality.json')), 'utf-8')) ;
-			var friend_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-nlu.json')), 'utf-8')).categories ;
-			var user_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(user.reference, '-nlu.json')), 'utf-8')).categories ;
-			var tones = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../cache', ''.concat(friend._id, '-tone.json')), 'utf-8')).document_tone.tones ;
+			var personalityInsights, friend_interests_json,user_interests_json, tones ;
+			try {
+				personalityInsights = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat(friend._id, '-personality.json')), 'utf-8'));
+			}catch(e) {
+				personalityInsights = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat('personality.json')), 'utf-8'));
+			}
+			try {
+				friend_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat(friend._id, '-nlu.json')), 'utf-8')).categories;
+			}catch(e){
+				friend_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat('nlu.json')), 'utf-8')).categories;
+			}
+			try {
+				user_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat(user.reference, '-nlu.json')), 'utf-8')).categories;
+			}catch (e) {
+				user_interests_json = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat('nlu.json')), 'utf-8')).categories;
+			}
+			try {
+				tones = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat(friend._id, '-tone.json')), 'utf-8')).document_tone.tones;
+			}catch (e) {
+				tones = JSON.parse(fs.readFileSync(path.join(__dirname, '../../cache', ''.concat('tone.json')), 'utf-8')).document_tone.tones;
+			}
 			var personality = personalityInsights.personality ;
 			var values = personalityInsights.values ;
 			var needs = personalityInsights.needs ;

@@ -1,6 +1,7 @@
 const Friend = require('../models/friend') ;
 const express = require('express');
 const passport = require('../passport') ;
+const fs = require('fs') ;
 
 const router = new express.Router() ;
 
@@ -50,6 +51,11 @@ router.delete('/friend/:id/' , passport.authenticate('jwt', { session:false }) ,
         if (!friend) {
             res.status(404).send()
         }
+        fs.unlink(`../../cache/${friend._id}.txt`, (err => {})) ;
+        fs.unlink(`../../cache/${friend._id}-personality.json`, (err => {})) ;
+		fs.unlink(`../../cache/${friend._id}-nlu.json`, (err => {})) ;
+		fs.unlink(`../../cache/${friend._id}-tone.json`, (err => {})) ;
+
         res.send({friend})
     } catch (e) {
         res.status(500).send()

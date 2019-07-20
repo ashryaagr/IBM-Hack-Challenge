@@ -135,7 +135,6 @@ def get_details():
     reddit_content = ''
     youtube_content =''
     usernames = req_data['usernames']
-    data_file = str(Path(__file__).resolve().parent.parent) + '/cache/' + str(req_data["id"])+ '.txt'
 
     if usernames.get('twitter'):
         twitterid = usernames['twitter']
@@ -164,12 +163,7 @@ def get_details():
      
     complete_data = tweet_plain_text + stackoverflow_post_content + reddit_content + youtube_content
 
-    try:
-        with open(data_file , 'w') as f:
-            f.write(complete_data)
-        return complete_data
-    except:
-        abort(404)
+    return complete_data
 
 if __name__ == '__main__':
-    app.run(debug=True , port=8000)
+    app.run(debug=True , host='0.0.0.0',port=8000)

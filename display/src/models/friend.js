@@ -9,7 +9,7 @@ const ToneAnalyzerV3 = require('ibm-watson/tone-analyzer/v3');
 // New api keys are commented out and shall be replaced a few hours before submission
 const personalityInsights = new PersonalityInsightsV3({
 	version: '2017-10-13',
-	iam_apikey: "DfyG5ufoFbVzHU4Vi8OT10Ar_lPiDrQwxuroxWBmlLy4" ,
+	iam_apikey: "V0iLdLUXlICN2KKG8Ne73lHOBFkWC1d4jvsC9kMhht02" ,
 	// "16ovkIyNhm7ed-d6rA8GevpkqIRvx6msZiIpskMDYqOZ" ,
 	url: "https://gateway-lon.watsonplatform.net/personality-insights/api",
 	disable_ssl_verification: true,
@@ -17,7 +17,7 @@ const personalityInsights = new PersonalityInsightsV3({
 
 const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
 	version: '2018-11-16',
-	iam_apikey: "df7OpYiPVRn4o3cF-HV9UP8eb8ZvWD5upYygGVRKY9az" ,
+	iam_apikey: "ZAzbP0e3xCKudAtLPxD2AbWylD2PfJskvOh5F3vZPTEB" ,
 	// "w0zGVo38grHTwoHhnY2la7tAA7rVOstlqfhgJn7lhYtq" ,
 	url: "https://gateway-lon.watsonplatform.net/natural-language-understanding/api",
 	disable_ssl_verification: true,
@@ -25,8 +25,7 @@ const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
 
 const toneAnalyzer = new ToneAnalyzerV3({
 	version: '2017-09-21',
-	iam_apikey: "Jen3RBgkWNXM07ZsQytRPFnxTLBlbTe5IHOlSzfPBHe0" ,
-	// "R9rNrWpSTbN-FQ2SpaNwlbqfNg42LkB-2ImUcRut2oMd" ,
+	iam_apikey: "R9rNrWpSTbN-FQ2SpaNwlbqfNg42LkB-2ImUcRut2oMd" ,
 	url: "https://gateway-lon.watsonplatform.net/tone-analyzer/api",
 	disable_ssl_verification: true,
 });

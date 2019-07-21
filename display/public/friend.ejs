@@ -69,12 +69,14 @@
                     <li>
                         <span>Friend of</span> - <%= user_name %>
                     </li>
+                    <% if (affinity) { %>
                     <li>
                         <span>Calculated Affinity</span> - <%= affinity %>
                     </li>
                     <li>
                         <span>Category</span> - <%= category %>
                     </li>
+                    <% }%>
                     <li>
                         <div style="text-align: center">
                             <span>Personality Characteristics</span>

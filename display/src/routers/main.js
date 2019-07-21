@@ -71,7 +71,7 @@ router.get('/friend/:id/', (req, res)=>{
 				common_interests = friend_interests.filter(x => user_interests.includes(x));
 				friend.common_interests = common_interests;
 				friend.save().catch(err=> {
-					return res.status(500).send(err)
+					return res.send(err)
 				})
 			} else {
 				common_interests = friend.common_interests;

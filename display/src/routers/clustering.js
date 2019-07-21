@@ -76,7 +76,7 @@ const cluster = function (user) {
 						n = friends.length;
 					var kmeans = new clustering.KMEANS();
 
-					if (n!=0)
+					if (n!==0)
 					{
 						var clusters = kmeans.run(affinities , n);
 
@@ -90,8 +90,8 @@ const cluster = function (user) {
 						for (let i = 0 ; i < n ; i++)
 						{
 							for(let j = 0 ;  j < clusters[i].length ; j++){
-								friends[j].category = categories[i];
-								friends[j].save().catch((err)=>{
+								friends[clusters[i][j]].category = categories[i];
+								friends[clusters[i][j]].save().catch((err)=>{
 									throw Error(err.message) ;
 								});
 							}

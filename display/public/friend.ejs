@@ -69,12 +69,12 @@
                     <li>
                         <span>Friend of</span> - <%= user_name %>
                     </li>
-<!--                    <li>
-                        <span>Calculated Affinity</span> - 0.1234
+                    <li>
+                        <span>Calculated Affinity</span> - <%= affinity %>
                     </li>
                     <li>
-                        <span>Category</span> - Low Affinity
-                    </li>-->
+                        <span>Category</span> - <%= category %>
+                    </li>
                     <li>
                         <div style="text-align: center">
                             <span>Personality Characteristics</span>
@@ -93,7 +93,9 @@
                         <span>Values</span> 
                         <ul>
                             <% values.forEach(value=>{%>
-                            <li><%= value.name %></li>
+                                <% if (value.raw_score>=0.5) { %>
+                                <li><%= value.name %></li>
+                                <% } %>
                             <% }) ;%>
                         </ul>
                     </li>
@@ -122,7 +124,9 @@
                         <ul>
                             <% consumption_preferences.forEach(consumption_preference=>{%>
                                 <% consumption_preference.consumption_preferences.forEach(item=>{%>
-                                <li><%= item.name %></li>
+                                    <% if (item.score===1) { %>
+                                    <li><%= item.name %></li>
+                                    <% } %>
                                 <% }) ;%>
                             <% }) ;%>
                         </ul>

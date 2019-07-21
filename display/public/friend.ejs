@@ -81,20 +81,6 @@
                             <div id="barchart" style="width: 100%; height: 500px;"></div>
                         </div>
                     </li>
-                </ul>
-            </div>
-            <div class="col-sm-6">
-                <ul style="list-style: none;">
-                    <li>
-                        <span>Consumption preferences</span>
-                        <ul>
-                            <% consumption_preferences.forEach(consumption_preference=>{%>
-                                <% consumption_preference.consumption_preferences.forEach(item=>{%>
-                                <li><%= item.name %></li>
-                                <% }) ;%>
-                            <% }) ;%>
-                        </ul>
-                    </li>
                     <li>
                         <span>Needs</span> 
                         <ul>
@@ -124,6 +110,20 @@
                         <ul>
                             <% common_interests.forEach(interest=>{%>
                                 <li><%=interest%></li>
+                            <% }) ;%>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <ul style="list-style: none;">
+                    <li>
+                        <span>Consumption preferences</span>
+                        <ul>
+                            <% consumption_preferences.forEach(consumption_preference=>{%>
+                                <% consumption_preference.consumption_preferences.forEach(item=>{%>
+                                <li><%= item.name %></li>
+                                <% }) ;%>
                             <% }) ;%>
                         </ul>
                     </li>

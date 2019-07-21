@@ -13,3 +13,5 @@ Follow these instructions to setup the project
 - If you want to shutdown the server press CTRL+C .
 - If you want to clean the build execute the following command :
 ```docker-compose down```
+---
+The link to the youtube video is : <https://www.youtube.com/watch?v=xOQMxOZ5OcU&feature=youtu.be>

@@ -46,10 +46,12 @@ opts.jwtFromRequest = ExtractJwt.fromExtractors([cookieExtractor]);
 opts.secretOrKey = process.env.SECRET_KEY ;
 
 passport.use('cookie', new JwtStrategy(opts, function(jwt_payload, done) {
-	User.findOne({id: jwt_payload.sub}, function(err, user) {
+	console.log("jwtpayload is : ", jwt_payload, jwt_payload.sub)
+	User.findById(jwt_payload._id, function(err, user) {
 		if (err) {
 			return done(err, false);
 		}
+		console.log(user)
 		if (user) {
 			return done(null, user);
 		} else {

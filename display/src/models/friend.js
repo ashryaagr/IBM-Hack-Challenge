@@ -9,7 +9,7 @@ const ToneAnalyzerV3 = require('ibm-watson/tone-analyzer/v3');
 // New api keys are commented out and shall be replaced a few hours before submission
 const personalityInsights = new PersonalityInsightsV3({
 	version: '2017-10-13',
-	iam_apikey: "V0iLdLUXlICN2KKG8Ne73lHOBFkWC1d4jvsC9kMhht02" ,
+	iam_apikey: "lZK2dNyNUSECO9sLZrj6YfiSWXa4EOTN2uysa4BeWq6N" ,
 	// "16ovkIyNhm7ed-d6rA8GevpkqIRvx6msZiIpskMDYqOZ" ,
 	url: "https://gateway-lon.watsonplatform.net/personality-insights/api",
 	disable_ssl_verification: true,
@@ -17,7 +17,7 @@ const personalityInsights = new PersonalityInsightsV3({
 
 const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
 	version: '2018-11-16',
-	iam_apikey: "ZAzbP0e3xCKudAtLPxD2AbWylD2PfJskvOh5F3vZPTEB" ,
+	iam_apikey: "omWjQ523nMEDcRMqEfFQImYQI8FwsGcLQ1SseDYOxJBm" ,
 	// "w0zGVo38grHTwoHhnY2la7tAA7rVOstlqfhgJn7lhYtq" ,
 	url: "https://gateway-lon.watsonplatform.net/natural-language-understanding/api",
 	disable_ssl_verification: true,
@@ -25,7 +25,7 @@ const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
 
 const toneAnalyzer = new ToneAnalyzerV3({
 	version: '2017-09-21',
-	iam_apikey: "R9rNrWpSTbN-FQ2SpaNwlbqfNg42LkB-2ImUcRut2oMd" ,
+	iam_apikey: "oAiXZgAHfLCNoenfzx-QF_ZIVAJLHuHdPgbuUww6UhNv" ,
 	url: "https://gateway-lon.watsonplatform.net/tone-analyzer/api",
 	disable_ssl_verification: true,
 });
@@ -80,6 +80,9 @@ friendSchema.pre('save', function (next) {
 		}
 		doRequest().then(async body=>{
 			var data = body ;
+			fs.writeFile(path.join(__dirname, '../../cache', ''.concat(friend._id, '.txt')), body, (err) => {
+					if (err) throw Error(err.message)
+				});
 
 			await personalityInsights.profile({
 				content: data.toString(),
@@ -94,7 +97,7 @@ friendSchema.pre('save', function (next) {
 				console.log(err)
 				throw Error(err.message)
 			});
-
+		console.log("after personality")
 
 			await naturalLanguageUnderstanding.analyze({
 				'text': data.toString(),
@@ -113,6 +116,7 @@ friendSchema.pre('save', function (next) {
 				throw Error(err.message)
 			});
 
+		console.log("after nlu")
 
 			await toneAnalyzer.tone({
 				tone_input: {
@@ -135,6 +139,8 @@ friendSchema.pre('save', function (next) {
 			console.log(err)
 			throw Error(err.message)
 		});
+
+		console.log("after tone")
 	} else
 		next();
 });

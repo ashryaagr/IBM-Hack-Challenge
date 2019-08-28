@@ -55,6 +55,7 @@ router.post('/user', async (req, res)=>{
 		.then((user)=>{
 		res.redirect('/login')
 		}).catch((err)=>{
+			console.log(err)
 		res.status(400).send(err)
 	}) ;
 		}).catch((err)=>{

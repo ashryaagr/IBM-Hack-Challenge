@@ -5,27 +5,27 @@ const fs = require('fs') ;
 const PersonalityInsightsV3 = require('ibm-watson/personality-insights/v3');
 const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1.js');
 const ToneAnalyzerV3 = require('ibm-watson/tone-analyzer/v3');
+const { personalityInsights_iam_apikey, naturalLanguageUnderstanding_iam_apikey,
+	toneAnalyzer_iam_apikey} = require('../../credentials') ;
 
 // New api keys are commented out and shall be replaced a few hours before submission
 const personalityInsights = new PersonalityInsightsV3({
 	version: '2017-10-13',
-	iam_apikey: "lZK2dNyNUSECO9sLZrj6YfiSWXa4EOTN2uysa4BeWq6N" ,
-	// "16ovkIyNhm7ed-d6rA8GevpkqIRvx6msZiIpskMDYqOZ" ,
+	iam_apikey: personalityInsights_iam_apikey ,
 	url: "https://gateway-lon.watsonplatform.net/personality-insights/api",
 	disable_ssl_verification: true,
 });
 
 const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
 	version: '2018-11-16',
-	iam_apikey: "omWjQ523nMEDcRMqEfFQImYQI8FwsGcLQ1SseDYOxJBm" ,
-	// "w0zGVo38grHTwoHhnY2la7tAA7rVOstlqfhgJn7lhYtq" ,
+	iam_apikey: naturalLanguageUnderstanding_iam_apikey ,
 	url: "https://gateway-lon.watsonplatform.net/natural-language-understanding/api",
 	disable_ssl_verification: true,
 });
 
 const toneAnalyzer = new ToneAnalyzerV3({
 	version: '2017-09-21',
-	iam_apikey: "oAiXZgAHfLCNoenfzx-QF_ZIVAJLHuHdPgbuUww6UhNv" ,
+	iam_apikey: toneAnalyzer_iam_apikey ,
 	url: "https://gateway-lon.watsonplatform.net/tone-analyzer/api",
 	disable_ssl_verification: true,
 });

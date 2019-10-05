@@ -1,2 +1,2 @@
-CLIENT_ID="15776"
-CLIENT_KEY=")Ae0b5ExLK17YUpS3sjEBw(("
+CLIENT_ID="Replace with your CLIENT ID"
+CLIENT_KEY="Replace with your CLIENT KEY"
